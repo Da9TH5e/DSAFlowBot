@@ -33,6 +33,7 @@ media/
 *.pyd
 *.db
 *.sqlite3
+youtube_videos/audio_cache/
 
 # OS generated files
 .DS_Store
