@@ -1,0 +1,64 @@
+<!--home.html-->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Baloo+Thambi+2:wght@400..800&family=Bitcount+Grid+Single:wght,CRSV@100..900,0&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Poppins&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:wght@600&family=Tilt+Neon&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <span class="logo">DSAFlowBot</span>
+        <ul class="nav-links">
+            {% if request.user.is_authenticated %}
+                <li><a href="/dashboard">Dashboard</a></li>
+            {% else %}
+                <li><a href="/login/">Dashboard</a></li>
+            {% endif %}
+            <li><a href="#">About</a></li>
+            <li class="last-link"><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+    <div class = "main">
+        <div class="hero-text">
+            <h1 class="first">Automating Your</h1>
+            <h1 class="second">Learning Journey</h1>
+        </div>
+        <div class = "hero-subtext">
+            <p class="first-text">Algobot empowers learners to master Data Structures and Algorithms </p>
+            <p>through a structured, efficient, and automation-driven approach designed for modern problem solving.</p>
+        </div>
+    </div>
+    <div class="hero-buttons">
+        <a href="/login/"><button class="getting-started" role="button">Start your journey</button></a>
+        <button class="learn-more" role="button">Learn More</button>
+    </div>
+
+    <div class="info-note">
+        <p><strong>Note:</strong> These questions are created by an AI to help you practice. 
+        Some may be inaccurate or incomplete — use them as guidance, not absolute answers.</p>
+    </div>
+    
+    <section class="about" id="about">
+        <h2>About Us</h2>
+        <p>Algobot simplifies complex concepts in Data Structures and Algorithms through automation and guided learning paths.</p>
+    </section>
+
+    <section class="contact" id="contact">
+        <h2>Contact Us</h2>
+        <p>Email: debarkomandal@gmail.com</p>
+        <p>We would love to hear your feedback and ideas.</p>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 Algobot. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

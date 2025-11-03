@@ -1,0 +1,58 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Baloo+Thambi+2:wght@400..800&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:wght@600&display=swap" rel="stylesheet">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'main_app/css/question.css' %}">
+    <title>Practice Questions</title>
+</head>
+<body>
+    <div class="header">
+        <h1>Practice Questions</h1>
+    </div>
+    
+    <div id="practice-container" class="practice-container">
+        <div class="questions-grid" id="questions-grid">
+            <!-- Question squares will be injected by JS -->
+        </div>
+        <div id="editor-container" class="editor-container hidden">
+            <div class="editor-coding-area" id="editor-coding-area">
+                <div class="editor-header">
+                    <button id="back-button" class="back-button">← Back to Questions</button>
+                    <h2 id="editor-title">Question</h2>
+                </div>
+                <div class="language-select">
+                    <label for="language"></label>
+                    <select id="language" name="language">
+                        <option value="python">Python</option>
+                        <option value="cpp">C++</option>
+                        <option value="java">Java</option>
+                        <option value="javascript">JavaScript</option>
+                    </select>
+                </div>
+            </div>
+            <div class="editor-content">
+                <div class="question-details">
+                    <div id="question-content"></div>
+                </div>
+                <div class="code-editor">
+                    <div class="code-area" id="code-area">
+                        <textarea placeholder="Write your code here..."></textarea>
+                        <hr class="separator">
+                        <button id="run-code-btn" class="run-code-btn">Run Code</button>
+                    </div>
+                    <div id="output" class="output"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'main_app/js/questions.js' %}"></script>
+</body>
+</html>

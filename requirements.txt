@@ -1,0 +1,20 @@
+# --- Core Framework & Utilities ---
+Django
+asgiref
+requests
+python-dotenv
+isodate
+daphne
+
+# --- LLM and AI Libraries (Groq & LangChain) ---
+groq
+tiktoken
+langchain-core
+langchain-groq
+
+# --- YouTube & Audio Processing ---
+yt-dlp
+youtube-transcript-api
+pydub
+openai-whisper
+ffmpeg-python

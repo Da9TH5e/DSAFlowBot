@@ -1,0 +1,332 @@
+/* General Body */
+body {
+    background-color: #222; /* primary background */
+    font-family: "Funnel Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    color: #e0e0e0; /* primary text */
+}
+
+/* Header */
+.header {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 0 30px;
+    height: 60px;
+    border-bottom: 1px solid #444;
+    background: #222; /* secondary background */
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #e0e0e0;
+}
+
+.header a {
+    font-size: 0.9rem;
+    color: #e0e0e0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.header a:hover {
+    color: #0097b2;
+    cursor: pointer;
+}
+
+.practice-container {
+    height: calc(100vh - 60px);
+    position: relative;
+}
+
+.language-select {
+    display: flex;
+    margin-right: 20px;
+    align-items: center;
+    gap: 10px;
+    margin-left: 20px;
+}
+
+.language-select label {
+    font-size: 0.9rem;
+    font-weight: 100;
+}
+
+.language-select select {
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: #252525;
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.language-select select:hover {
+    color: #ddd;
+}
+
+/* Editor Coding Area */
+.editor-coding-area {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    background: #252525;
+    border-bottom: 1px solid #333;
+    box-sizing: border-box;
+}
+
+/* Questions Grid */
+.questions-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 20px;
+    align-content: flex-start;
+    height: calc(100% - 40px);
+    overflow-y: auto;
+}
+
+.questions-grid.hidden {
+    display: none;
+}
+
+/* Question Card */
+.question-square {
+    width: 200px;
+    height: 120px;
+    background: #252525;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.question-square:hover {
+    border-color: #444;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.question-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin: 0 0 8px 0;
+}
+
+.question-desc {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.4;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.question-type {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #0097b2;
+    margin-top: auto;
+}
+
+/* Editor Container */
+.editor-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #1a1a1a;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: top left;
+    overflow: hidden; /* Add this line */
+}
+
+.editor-container.hidden {
+    display: none;
+}
+
+.editor-container.animating {
+    pointer-events: none; /* prevent interaction during animation */
+}
+
+.editor-header {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.back-button {
+    background-color: #004450;
+    border: 1px solid #006172;
+    color: #ddd;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 20px;
+    transition: all 0.2s ease;
+}
+
+.back-button:hover {
+    background-color: #005564;
+    border: 1px solid #00869e;
+    color: #ddd;
+}
+
+#editor-title {
+    font-size: 18px;
+    color: #e0e0e0;
+    margin: 0;
+}
+
+/* Editor Content */
+.editor-content {
+    display: flex;
+    flex: 1;
+    height: calc(100% - 60px);
+}
+
+
+/* Question Details */
+.question-details {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    border-right: 1px solid #333;
+    background: #252525;
+}
+
+.question-details p {
+    color: #aaa;
+    margin: 15px 0;
+}
+
+.question-details strong {
+    color: #e0e0e0;
+}
+
+.question-details em {
+    color: #888;
+    font-style: italic;
+}
+
+.code-editor {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #252525;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Make code area flexible but not overflow below */
+.code-area {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* allow it to grow */
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    padding: 15px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Textarea takes most space inside */
+.code-area textarea {
+    flex: 1;
+    width: 100%;
+    border: none;
+    outline: none;
+    resize: none;
+    background: transparent;
+    color: #e0e0e0;
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+/* Separator line just above the Run button */
+.separator {
+    border: none;
+    border-top: 1px solid #444;
+    margin: 10px 0;
+}
+
+/* Run button sits below textarea */
+.run-code-btn {
+    align-self: flex-start;
+    padding: 8px 16px;
+    background: #006274;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 400;
+    transition: all 0.5s ease;
+}
+
+.run-code-btn:hover {
+    background: #007a90;
+}
+
+.output {
+    flex: 1; /* take remaining space */
+    margin-top: 15px;
+    background: #1b1b1b;
+    color: #e0e0e0;
+    padding: 15px;
+    border-radius: 10px;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    min-height: 0; /* prevents overflow issues */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .editor-content {
+        flex-direction: column;
+    }
+
+    .question-details {
+        flex: 0 0 40%;
+        border-right: none;
+        border-bottom: 1px solid #333;
+    }
+
+    .code-editor {
+        flex: 1;
+    }
+
+    .questions-grid {
+        justify-content: center;
+    }
+
+    .question-square {
+        width: 100%;
+        max-width: 300px;
+        height: 100px;
+    }
+}

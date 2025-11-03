@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+.Python
+
+# Virtual environment
+env/
+venv/
+.venv/
+
+# Django
+db.sqlite3
+secret_key.txt
+.env
+logs/
+staticfiles/
+media/
+
+# VSCode and IDE files
+.vscode/
+.idea/
+
+# Byte-compiled / cache
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Deployment
+*.bak
+*.tmp
+*.swp
