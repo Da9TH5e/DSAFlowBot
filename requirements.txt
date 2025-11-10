@@ -7,6 +7,12 @@ python-dotenv
 requests
 isodate
 Pillow
+uvicorn
+gunicorn
+whitenoise
+python-dotenv
+requests
+isodate
 
 # --- AI and Groq ---
 groq
