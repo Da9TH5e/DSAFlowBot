@@ -19,7 +19,6 @@ secret_key.txt
 .env
 logs/
 staticfiles/
-media/
 
 # VSCode and IDE files
 .vscode/
