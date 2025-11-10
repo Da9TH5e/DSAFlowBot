@@ -1,0 +1,68 @@
+<!--verify.html-->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verification - DSAFlowBot</title>
+  <link rel="stylesheet" href="{% static 'main_app/css/verify.css' %}">
+</head>
+<body>
+  <div class="utilies">
+    <a href="/signup/">Back</a>
+  </div>
+
+  <div class="verify-box">
+    <div class="verify-container">
+      <h1>Verify Your Email</h1>
+      <p>We’ve sent a 6-digit code to <strong>{{ email }}</strong>.  
+      Please enter it below to activate your account.</p>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="otp">Verification Code</label>
+          <input type="text" name="otp" maxlength="6" pattern="\d{6}" required>
+        </div>
+        <button type="submit">Verify</button>
+      </form>
+
+      <form action="{% url 'resend_otp' %}" method="get">
+        <button id="resend-btn" disabled style="opacity:0.5;">Resend OTP</button>
+        <p id="timer-text"></p>
+
+        <script>
+        let countdown = 120; // 2 minutes
+        const resendBtn = document.getElementById("resend-btn");
+        const timerText = document.getElementById("timer-text");
+
+        function updateTimer() {
+            if (countdown > 0) {
+                const minutes = Math.floor(countdown / 60);
+                const seconds = countdown % 60;
+                timerText.textContent = `You can resend in ${minutes}:${seconds.toString().padStart(2, "0")}`;
+                countdown--;
+                setTimeout(updateTimer, 1000);
+            } else {
+                resendBtn.disabled = false;
+                resendBtn.style.opacity = "1";
+                timerText.textContent = "You can resend the OTP now.";
+            }
+            }
+
+            updateTimer();
+            </script>
+
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -154,6 +154,29 @@
     footer a:hover {
       text-decoration: underline;
     }
+
+    /* Custom alert box */
+  .custom-alert {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    background: #004450;
+    color: #ddd;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: 1px solid #0097b29c;
+    font-weight: 500;
+    font-size: 0.95rem;
+    z-index: 1000;
+    animation: fadeInOut 3s ease forwards;
+  }
+
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    10%, 90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+  }
+
   </style>
 </head>
 <body>
@@ -164,7 +187,7 @@
   <div class="login-box" id="signup-box">
     <div class="login-container">
       <div class="profile-pic">
-        <img id="selected-dp" src="{% static 'main_app/dp/student.png' %}" alt="Profile Picture">
+        <img id="selected-dp" src="/media/profile_pics/student.png" alt="Profile Picture">
         <div class="edit-icon" id="edit-dp">
             <svg width="25px" height="25px" viewBox="-3.2 -3.2 22.40 22.40" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ddd" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M8.29289 3.70711L1 11V15H5L12.2929 7.70711L8.29289 3.70711Z" fill="#ddd"></path> <path d="M9.70711 2.29289L13.7071 6.29289L15.1716 4.82843C15.702 4.29799 16 3.57857 16 2.82843C16 1.26633 14.7337 0 13.1716 0C12.4214 0 11.702 0.297995 11.1716 0.828428L9.70711 2.29289Z" fill="#ddd"></path> </g></svg>
         </div>
@@ -179,32 +202,35 @@
       {% endif %}
 
       <form method="post" action="{% url 'signup' %}">
-      {% csrf_token %}
+        {% csrf_token %}
+        <input type="hidden" name="profile_picture_choice" id="profile_picture_choice" value="">
 
-      <div class="form-group">
-        <label for="id_username">Username</label>
-        <input type="text" name="username" id="id_username" value="{{ form.username.value|default_if_none:'' }}" required>
-        <span id="username-status" style="font-size:0.9rem; margin-left:5px;"></span>
-      </div>
+        <div class="form-group">
+          <label for="id_username">Username</label>
+          <input type="text" name="username" id="id_username" value="{{ form.username.value|default_if_none:'' }}" required>
+          <span id="username-status" style="font-size:0.7rem; margin-top:5px; color:#b82d2d; margin-left:5px;"></span>
+        </div>
 
-      <div class="form-group">
-        <label for="id_email">Email</label>
-        <input type="email" name="email" id="id_email" value="{{ form.email.value|default_if_none:'' }}" required>
-      </div>
+        <div class="form-group">
+          <label for="id_email">Email</label>
+          <input type="email" name="email" id="id_email" value="{{ form.email.value|default_if_none:'' }}" required>
+          <span id="email-status" style="font-size:0.7rem; margin-top:5px; color:#b82d2d; margin-left:5px;"></span>
+        </div>
 
-      <div class="form-group">
-        <label for="id_password1">Password</label>
-        <input type="password" name="password1" id="id_password1" required>
-      </div>
 
-      <div class="form-group">
-        <label for="id_password2">Confirm Password</label>
-        <input type="password" name="password2" id="id_password2" required>
-        <span id="password-match" style="font-size:0.9rem; margin-left:5px;"></span>
-      </div>
+        <div class="form-group">
+          <label for="id_password1">Password</label>
+          <input type="password" name="password1" id="id_password1" required>
+        </div>
 
-      <button type="submit">Sign Up</button>
-    </form>
+        <div class="form-group">
+          <label for="id_password2">Confirm Password</label>
+          <input type="password" name="password2" id="id_password2" required>
+          <span id="password-match" style="font-size:0.9rem; margin-left:5px;"></span>
+        </div>
+
+        <button type="submit">Sign Up</button>
+      </form>
 
       <p class="signup-link">
         Already have an account? <a href="/login/">Login</a>
@@ -222,45 +248,151 @@
     <div class="dp-modal-content">
       <h2>Select Your Avatar</h2>
       <div class="dp-options">
-        <div class="dp-option"><img src="{% static 'main_app/dp/student1.png' %}" data-filename="dp1.png"></div>
-        <div class="dp-option"><img src="{% static 'main_app/dp/student2.png' %}" data-filename="dp2.png"></div>
-        <div class="dp-option"><img src="{% static 'main_app/dp/student3.png' %}" data-filename="dp3.png"></div>
-        <div class="dp-option"><img src="{% static 'main_app/dp/student4.png' %}" data-filename="dp4.png"></div>
-        <div class="dp-option"><img src="{% static 'main_app/dp/student5.png' %}" data-filename="dp5.png"></div>
+        <div class="dp-option"><img src="/media/profile_pics/student1.png" data-filename="student1.png"></div>
+        <div class="dp-option"><img src="/media/profile_pics/student2.png" data-filename="student2.png"></div>
+        <div class="dp-option"><img src="/media/profile_pics/student3.png" data-filename="student3.png"></div>
+        <div class="dp-option"><img src="/media/profile_pics/student4.png" data-filename="student4.png"></div>
+        <div class="dp-option"><img src="/media/profile_pics/student5.png" data-filename="student5.png"></div>
       </div>
       <button class="close-modal" id="close-modal">Close</button>
     </div>
   </div>
 
   <script>
-  const usernameInput = document.getElementById('id_username');
-  const password1Input = document.getElementById('id_password1');
-  const password2Input = document.getElementById('id_password2');
-  const signupForm = document.querySelector('form');
+document.addEventListener('DOMContentLoaded', () => {
+  const editIcon = document.getElementById('edit-dp');
+  const modal = document.getElementById('dp-modal');
+  const closeModal = document.getElementById('close-modal');
+  const selectedDp = document.getElementById('selected-dp');
+  const dpOptions = document.querySelectorAll('.dp-option img');
+  const hiddenInput = document.getElementById('profile_picture_choice');
 
-  usernameInput.addEventListener('input', () => {
-    const username = usernameInput.value.trim();
-    if (!username) return;
+  editIcon.addEventListener('click', () => modal.classList.add('active'));
+  closeModal.addEventListener('click', () => modal.classList.remove('active'));
 
-    fetch(`/check-username/?username=${username}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.available) {
-          usernameInput.style.borderColor = 'green';
-        } else {
-          usernameInput.style.borderColor = 'red';
-        }
-      });
+  dpOptions.forEach(img => {
+    img.addEventListener('click', () => {
+      selectedDp.src = img.src;
+      hiddenInput.value = img.src;
+      modal.classList.remove('active');
+    });
   });
 
-  signupForm.addEventListener('submit', (e) => {
-    if (password1Input.value !== password2Input.value) {
+  const form = document.querySelector('form');
+  const pw1 = document.getElementById('id_password1');
+  const pw2 = document.getElementById('id_password2');
+  const user = document.getElementById('id_username');
+  const mail = document.getElementById('id_email');
+  const usernameStatus = document.getElementById('username-status');
+  const emailStatus = document.getElementById('email-status');
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  let usernameValid = false;
+  let emailValid = false;
+
+  // ✅ Helper to update submit state
+  function updateSubmitState() {
+    if (usernameValid && emailValid) {
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = "1";
+      submitBtn.style.cursor = "pointer";
+    } else {
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = "0.6";
+      submitBtn.style.cursor = "not-allowed";
+    }
+  }
+
+  // Initially disable the button
+  updateSubmitState();
+
+  // ✅ Username check
+  user.addEventListener('blur', async () => {
+    const username = user.value.trim();
+    if (!username) {
+      usernameStatus.textContent = "";
+      usernameValid = false;
+      updateSubmitState();
+      return;
+    }
+
+    try {
+      const response = await fetch(`/check_username/?username=${encodeURIComponent(username)}`);
+      const data = await response.json();
+
+      if (!data.available) {
+        usernameStatus.textContent = "Username already taken";
+        usernameValid = false;
+      } else {
+        usernameStatus.textContent = "";
+        usernameValid = true;
+      }
+    } catch (err) {
+      console.error("Username check failed", err);
+      usernameValid = false;
+    }
+    updateSubmitState();
+  });
+
+  // ✅ Email check
+  mail.addEventListener('blur', async () => {
+    const email = mail.value.trim();
+    if (!email) {
+      emailStatus.textContent = "";
+      emailValid = false;
+      updateSubmitState();
+      return;
+    }
+
+    try {
+      const response = await fetch(`/check_email/?email=${encodeURIComponent(email)}`);
+      const data = await response.json();
+
+      if (!data.available) {
+        emailStatus.textContent = "Email already registered";
+        emailValid = false;
+      } else {
+        emailStatus.textContent = "";
+        emailValid = true;
+      }
+    } catch (err) {
+      console.error("Email check failed", err);
+      emailValid = false;
+    }
+    updateSubmitState();
+  });
+
+  // ✅ Final submission check
+  form.addEventListener('submit', (e) => {
+    if (!usernameValid || !emailValid) {
       e.preventDefault();
-      alert("Passwords do not match!");
-      password1Input.focus();
+      showCustomAlert("Please fix errors before continuing");
+      return;
+    }
+
+    if (user.value.trim().toLowerCase() === mail.value.trim().toLowerCase()) {
+      e.preventDefault();
+      showCustomAlert("Username and Email cannot be the same");
+      return;
+    }
+
+    if (pw1.value !== pw2.value) {
+      e.preventDefault();
+      showCustomAlert("Passwords do not match");
+      return;
     }
   });
-  </script>
+
+  function showCustomAlert(message) {
+    const alertBox = document.createElement('div');
+    alertBox.classList.add('custom-alert');
+    alertBox.textContent = message;
+    document.body.appendChild(alertBox);
+    setTimeout(() => alertBox.remove(), 3000);
+  }
+});
+</script>
+
 
 </body>
 </html>

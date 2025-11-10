@@ -2,77 +2,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - DSAFlowBot</title>
-    <link rel="stylesheet" href="{% static 'main_app/css/login.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - DSAFlowBot</title>
+  <link rel="stylesheet" href="{% static 'main_app/css/login.css' %}">
+  <style>
+    .login-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      transition: all 0.5s ease;
+    }
+
+    .login-container, .verify-container {
+      background: #222;
+      padding: 40px 50px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      transition: transform 0.6s ease, opacity 0.6s ease;
+    }
+
+    /* When verification is active, dim and disable login form */
+  .login-container.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+    filter: blur(1px);
+    transition: opacity 0.4s ease, filter 0.4s ease;
+  }
+
+
+    .verify-container {
+      max-width: 350px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(50px);
+    }
+
+    .verify-container.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    .expanded {
+      gap: 60px;
+    }
+
+    .verify-container input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #303030;
+      color: #e6edf3;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+
+    .verify-container button {
+      width: 100%;
+      padding: 10px;
+      background-color: #004450;
+      outline: 1px solid #006172;
+      border: none;
+      border-radius: 8px;
+      color: #ddd;
+      cursor: pointer;
+      font-weight: 500;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .verify-container button:hover:not(:disabled) {
+      background-color: #005564;
+      outline: 1px solid #00869e;
+    }
+
+    .verify-container button:disabled {
+      background-color: #333;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .timer-text {
+      font-size: 0.8rem;
+      color: #bbb;
+      margin-top: 8px;
+      height: 16px;
+      transition: opacity 0.5s ease;
+    }
+
+    
+    /* Custom alert box */
+  .custom-alert {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    background: #004450;
+    color: #ddd;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: 1px solid #0097b29c;
+    font-weight: 500;
+    font-size: 0.95rem;
+    z-index: 1000;
+    animation: fadeInOut 3s ease forwards;
+  }
+
+  #verify-email[readonly] {
+  background-color: #2d2d2d;
+  cursor: not-allowed;
+  color: #aaa;
+}
+
+  </style>
 </head>
 <body>
-    <div class="utilies">
-        <a href="/">Back</a>
-    </div>
+  <div class="utilies">
+    <a href="/">Back</a>
+  </div>
 
-    <div class="login-box" id="login-box">
-        <div class="login-container">
-            <h1>Login</h1>
+  <div class="login-wrapper" id="login-wrapper">
+    <div class="login-container" id="login-container">
+      <h1>Login</h1>
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="popup">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="popup {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
 
-            {% if form.errors %}
-                <div class="error">
-                    <p>Invalid username or password. Please try again.</p>
-                </div>
-            {% endif %}
-
-            <form method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="id_identifier">Email / Username</label>
-                    <input type="text" name="identifier" id="id_identifier" required>
-                </div>
-
-                <div class="form-group password-container">
-                    <label for="id_password">Password</label>
-                    <input type="password" name="password" id="id_password" required>
-                    <span class="toggle-password" id="toggle-password">
-                        <!-- Eye open -->
-                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#777"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M22 12C22 12 18.3636 19 12 19C5.63636 19 2 12 2 12C2 12 5.63636 5 12 5C14.8779 5 17.198 6.43162 18.8762 8M9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9" stroke="#777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-
-                        <!-- Eye close -->
-                        <svg width="20px" height="20px\" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#777"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M22 12C22 12 21.3082 13.3317 20 14.8335M10 5.23552C10.3244 5.15822 10.6578 5.09828 11 5.05822C11.3254 5.02013 11.6588 5 12 5C14.8779 5 17.198 6.43162 18.8762 8M12 9C12.3506 9 12.6872 9.06015 13 9.17071C13.8524 9.47199 14.528 10.1476 14.8293 11C14.9398 11.3128 15 11.6494 15 12M3 3L21 21M12 15C11.6494 15 11.3128 14.9398 11 14.8293C10.1476 14.528 9.47202 13.8524 9.17073 13C9.11389 12.8392 9.07037 12.6721 9.0415 12.5M4.14701 9C3.83877 9.34451 3.56234 9.68241 3.31864 10C2.45286 11.1282 2 12 2 12C2 12 5.63636 19 12 19C12.3412 19 12.6746 18.9799 13 18.9418" stroke="#777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-
-                    </span>
-                </div>
-
-                <button type="submit">Login</button>
-            </form>
-
-            <p class="signup-link">
-                Don't have an account? <a href="/signup/">Sign up</a>
-            </p>
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="id_identifier">Email / Username</label>
+          <input type="text" name="identifier" id="id_identifier" required>
         </div>
-    </div>
-    <script>
-        const togglePassword = document.getElementById('toggle-password');
-        const passwordField = document.getElementById('id_password');
-        const eyeOpen = togglePassword.querySelector('svg:nth-child(1)');
-        const eyeClosed = togglePassword.querySelector('svg:nth-child(2)');
 
-        togglePassword.addEventListener('click', () => {
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                eyeOpen.style.display = 'none';
-                eyeClosed.style.display = 'inline';
-            } else {
-                passwordField.type = 'password';
-                eyeOpen.style.display = 'inline';
-                eyeClosed.style.display = 'none';
-            }
-        });
-    </script>
+        <div class="form-group password-container">
+          <label for="id_password">Password</label>
+          <input type="password" name="password" id="id_password" required>
+          <span class="toggle-password" id="toggle-password">
+            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#777">
+              <path d="M22 12C22 12 18.3636 19 12 19C5.63636 19 2 12 2 12C2 12 5.63636 5 12 5C14.8779 5 17.198 6.43162 18.8762 8M9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9" stroke="#777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#777">
+              <path d="M3 3L21 21M12 15C11.6494 15 11.3128 14.9398 11 14.8293C10.1476 14.528 9.47202 13.8524 9.17073 13C9.11389 12.8392 9.07037 12.6721 9.0415 12.5M22 12C22 12 21.3082 13.3317 20 14.8335M4.14701 9C3.83877 9.34451 3.56234 9.68241 3.31864 10C2.45286 11.1282 2 12 2 12C2 12 5.63636 19 12 19C12.3412 19 12.6746 18.9799 13 18.9418" stroke="#777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+        </div>
+
+        <button type="submit">Login</button>
+      </form>
+
+      <p class="signup-link">
+        Don't have an account? <a href="/signup/">Sign up</a>
+      </p>
+      <p class="forgot_pass">
+        Forgot Password? <a href="/forgot_password/">Reset here</a>
+      </p>
+    </div>
+
+    <!-- VERIFICATION PANEL -->
+    <div class="verify-container" id="verify-container">
+      <h2>Verify Your Email</h2>
+      <p style="color:#aaa; margin-bottom:20px;">We’ve sent a verification code to your email.</p>
+      <form id="verify-form">
+        {% csrf_token %}
+        <input type="email" id="verify-email" value="{{ email|default:'' }}" placeholder="Enter your email" required readonly>
+        <button type="button" id="send-code-btn">Send Code</button>
+        <input type="text" id="verify-otp" maxlength="6" placeholder="Enter 6-digit code">
+        <button type="button" id="confirm-verify-btn">Verify</button>
+        <p id="timer-text" class="timer-text"></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const wrapper = document.getElementById("login-wrapper");
+    const verifyContainer = document.getElementById("verify-container");
+    const sendCodeBtn = document.getElementById("send-code-btn");
+    const confirmVerifyBtn = document.getElementById("confirm-verify-btn");
+    const timerText = document.getElementById("timer-text");
+    const emailInput = document.getElementById("verify-email");
+    const otpInput = document.getElementById("verify-otp");
+
+    const loginContainer = document.getElementById("login-container");
+
+    const shouldShowPanel = "{{ verify_email|default:'false' }}" === "True";
+    if (shouldShowPanel) {
+      wrapper.classList.add("expanded");
+      verifyContainer.classList.add("active");
+      loginContainer.classList.add("disabled");
+    }
+
+    function startTimer(seconds = 120) {
+      sendCodeBtn.disabled = true;
+      timerText.style.opacity = "1";
+
+      let remaining = seconds;
+      const interval = setInterval(() => {
+        const mins = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        timerText.textContent = `Resend available in ${mins}:${secs.toString().padStart(2, "0")}`;
+        remaining--;
+        if (remaining < 0) {
+          clearInterval(interval);
+          timerText.textContent = "You can resend the code now.";
+          setTimeout(() => timerText.style.opacity = "0", 3000);
+          sendCodeBtn.disabled = false;
+        }
+      }, 1000);
+    }
+
+    sendCodeBtn.addEventListener("click", () => {
+      const email = emailInput.value.trim();
+      if (!email) return showCustomAlert("Please enter your email.");
+      fetch("/forgot_password/send_otp/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+        },
+        body: JSON.stringify({ email }),
+      })
+      .then(res => res.json())
+      .then(data => {
+        showCustomAlert(data.message);
+        if (data.status === "ok") startTimer(120);
+      });
+    });
+
+    confirmVerifyBtn.addEventListener("click", () => {
+      const email = emailInput.value.trim();
+      const otp = otpInput.value.trim();
+      if (!otp) return showCustomAlert("Please enter the code.");
+      fetch("/verify_login_email/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+        },
+        body: JSON.stringify({ email, otp }),
+      })
+      .then(res => res.json())
+      .then(data => {
+        showCustomAlert(data.message);
+        if (data.status === "ok") {
+          setTimeout(() => (window.location.href = "/login/"), 2500);
+        }
+      });
+    });
+
+    function showCustomAlert(message) {
+        const alertBox = document.createElement('div');
+        alertBox.classList.add('custom-alert');
+        alertBox.textContent = message;
+        document.body.appendChild(alertBox);
+        setTimeout(() => alertBox.remove(), 3000);
+      }
+  </script>
 </body>
 </html>

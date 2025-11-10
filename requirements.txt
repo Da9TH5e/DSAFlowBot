@@ -1,18 +1,20 @@
-# --- Core Framework & Utilities ---
+# --- Django core ---
 Django
-asgiref
-requests
-python-dotenv
-isodate
 daphne
+gunicorn
+whitenoise
+python-dotenv
+requests
+isodate
+Pillow
 
-# --- LLM and AI Libraries (Groq & LangChain) ---
+# --- AI and Groq ---
 groq
 tiktoken
 langchain-core
 langchain-groq
 
-# --- YouTube & Audio Processing ---
+# --- YouTube, Whisper, and media ---
 yt-dlp
 youtube-transcript-api
 pydub

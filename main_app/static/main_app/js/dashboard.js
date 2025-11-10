@@ -175,7 +175,6 @@ function setupRoller(topics, lang) {
         // Start backend fetching process
         fetch(`/get_videos/?language=${lang}&topic=${encodeURIComponent(topicName)}`)
             .then(res => res.json())
-            .then(data => console.log("Background fetch started:", data))
             .catch(err => console.error("Error triggering background fetch:", err));
 
         // Begin polling for processing updates
@@ -183,18 +182,15 @@ function setupRoller(topics, lang) {
 
         // Auto-refresh get_filtered_videos every 30 sec
         filteredInterval = setInterval(() => {
-            console.log("Refreshing filtered videos...");
             fetchFilteredVideos(lang, topicName);
         }, FILTERED_INTERVAL);
 
         // Stop auto-refresh after 30 minutes
         filteredTimeout = setTimeout(() => {
-            console.log("Stopped 30-min auto-refresh cycle.");
             clearInterval(filteredInterval);
         }, MAX_POLLING_DURATION);
 
         render();
-        console.log("Selected topic:", topicName);
     }
 
     render();
@@ -363,7 +359,6 @@ document.getElementById("generate-roadmap-btn").addEventListener("click", async 
         const data = await response.json();
 
         if (response.ok) {
-            console.log("New roadmap generated:", data);
             showTopAlert("Roadmap generated successfully!");
 
             setTimeout(async () => {

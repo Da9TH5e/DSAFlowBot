@@ -1,0 +1,157 @@
+* {
+  margin-bottom: 10px;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Baloo 2", "Roboto", sans-serif;
+}
+
+body {
+  background: #1a1a1a;
+  color: #ddd;
+  min-height: 100vh;
+}
+
+.utilies {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+}
+
+.utilies a {
+  color: #ddd;
+  background-color: #004450;
+  outline: 1px solid #006172;
+  text-decoration: none;
+  font-weight: 500;
+  background: rgba(0, 162, 199, 0.15);
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.utilies a:hover {
+  background-color: #005564;
+  outline: 1px solid #00869e;
+  text-decoration: none;
+}
+
+.verify-box {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.verify-container {
+  background: #222;
+  padding: 40px 50px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.verify-container h1 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #ddd;
+  letter-spacing: 1px;
+}
+
+.verify-container p {
+  color: #aaa;
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.form-group label {
+  display: block;
+  color: #ddd;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #303030;
+  color: #e6edf3;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.form-group input:focus {
+  outline: 1px solid #555;
+}
+
+button {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  background-color: #004450;
+  outline: 1px solid #006172;
+  color: #ddd;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #005564;
+  outline: 1px solid #00869e;
+  transition: all 0.4s ease;
+}
+
+.resend-btn {
+  margin-top: 15px;
+  background: transparent;
+  outline: none;
+  border: none;
+  color: #0097b2;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.resend-btn:hover {
+  text-decoration: underline;
+}
+
+.error, .success, .warning {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.error {
+  background-color: rgba(218, 54, 51, 0.1);
+  color: #da3633;
+  border: 1px solid #da3633;
+}
+
+.success {
+  background-color: rgba(46, 160, 67, 0.1);
+  color: #2ea043;
+  border: 1px solid #2ea043;
+}
+
+.warning {
+  background-color: rgba(255, 171, 0, 0.1);
+  color: #ffab00;
+  border: 1px solid #ffab00;
+}

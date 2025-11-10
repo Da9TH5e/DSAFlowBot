@@ -1,5 +1,8 @@
 #models.py
 
+from django.utils import timezone
+import random
+import string
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -7,8 +10,35 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
 
+    class Meta:
+        unique_together = ('username', 'email')
+
     def __str__(self):
         return self.username
+
+class EmailVerification(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="email_verification")
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(default=timezone.now)
+    last_sent = models.DateTimeField(default=timezone.now)
+
+    def generate_otp(self):
+        """Generate a new 6-digit OTP and update timestamps"""
+        self.otp = ''.join(random.choices(string.digits, k=6))
+        self.created_at = timezone.now()
+        self.last_sent = timezone.now()
+        self.save()
+
+    def can_resend(self):
+        """Check if 2 minutes (120 sec) have passed since last send"""
+        return (timezone.now() - self.last_sent).total_seconds() >= 120
+
+    def is_expired(self):
+        """OTP valid for 10 minutes"""
+        return (timezone.now() - self.created_at).total_seconds() > 600
+
+    def __str__(self):
+        return f"OTP for {self.user.username}"
 
 
 class Language(models.Model):

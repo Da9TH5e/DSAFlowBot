@@ -21,8 +21,9 @@
         <span class="dashboard-logo">DSAFlowBot</span>
             <ul class="dashboard-nav-links">
                 <div class="profile-container">
-                    <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'main_app/dp/student.png' %}{% endif %}" 
-                        alt="Profile" class="profile-pic-navbar" id="profile-pic">
+                    <!-- here -->
+                    <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}/media/profile_pics/student1.png{% endif %}" 
+                    alt="Profile" class="profile-pic-navbar" id="profile-pic">
                 </div>
                 <form action="{% url 'logout' %}" method="post" style="display:inline;">
                     {% csrf_token %}
