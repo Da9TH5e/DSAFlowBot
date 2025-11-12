@@ -17,3 +17,7 @@ PYTHONPATH = "."
 
 [unitTest]
 pattern = "test*.py"
+
+[[ports]]
+localPort = 8000
+externalPort = 80
