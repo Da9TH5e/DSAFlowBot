@@ -1,6 +1,0 @@
-run = "python manage.py runserver 0.0.0.0:8000"
-
-[env]
-DJANGO_SETTINGS_MODULE = "mysite.settings"
-PORT = "8000"
-PYTHONUNBUFFERED = "1"
