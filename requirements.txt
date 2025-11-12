@@ -1,0 +1,16 @@
+Django
+daphne
+gunicorn
+whitenoise
+python-dotenv
+requests
+isodate
+Pillow
+uvicorn
+groq
+tiktoken
+langchain-core
+langchain-groq
+yt-dlp
+youtube-transcript-api
+pydub
