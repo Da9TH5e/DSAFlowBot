@@ -1,7 +1,6 @@
 # views.py
 
 import os
-import requests
 import json
 import re
 from asgiref.sync import async_to_sync
@@ -11,7 +10,6 @@ from django.utils import timezone
 import random
 import string
 from django.http import JsonResponse
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -21,7 +19,6 @@ from backend.roadmap_engine import roadmap_generator
 from backend.definition_engine import definition_generator
 from django.views.decorators.cache import never_cache
 from backend.code_evaluator.judge0_executor import submit_code
-from main_app.forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from backend.filter_videos.fetch_videos_youtube import fetching_videos
 from main_app.models import Language, Question, Roadmap, Topic, User, Video, EmailVerification
@@ -57,7 +54,6 @@ def roadmap_view(request):
     })
 
 
-@ensure_csrf_cookie
 @login_required
 def regenerate_roadmap(request):
     language_name = request.GET.get("language")
@@ -80,7 +76,6 @@ def regenerate_roadmap(request):
     return JsonResponse({"message": "Roadmap regenerated successfully", "roadmap": roadmap.topics})
 
 
-@csrf_protect
 @require_POST
 def set_language(request):
     try:
@@ -100,7 +95,6 @@ def set_language(request):
         return JsonResponse({"error": "Invalid JSON"}, status=400)
 
 @require_POST
-@csrf_protect
 def get_topic(request):
     try:
         data = json.loads(request.body)
@@ -133,7 +127,7 @@ def run_fetch(language, topic_name):
 
     
 @require_GET
-@csrf_protect
+@login_required
 def get_videos(request):
     language = request.GET.get("language")
     topic_name = request.GET.get("topic")
@@ -146,7 +140,6 @@ def get_videos(request):
     return JsonResponse({"status": "processing"})
 
 @require_GET
-@csrf_protect
 def get_filtered_videos(request):
     language = request.GET.get("language")
     topic_name = request.GET.get("topic")
@@ -175,7 +168,6 @@ def get_filtered_videos(request):
         return JsonResponse({"status": "error", "error": str(e)})
 
 
-@csrf_protect
 @require_GET
 def get_questions(request):
     video_id = request.GET.get("video_id")
@@ -472,7 +464,6 @@ def resend_otp(request):
 def forgot_password_view(request):
     return render(request, "main_app/forgot_password.html")
 
-@csrf_protect
 @require_POST
 def send_reset_otp(request):
     try:
@@ -507,7 +498,6 @@ def send_reset_otp(request):
         messages.error(f"Error sending reset OTP: {e}")
         return JsonResponse({"status": "error", "message": "Failed to send OTP."}, status=500)
 
-@csrf_protect
 @require_POST
 def verify_reset_otp(request):
     try:
@@ -552,7 +542,6 @@ def verify_reset_otp(request):
         messages.error(f"Error verifying OTP: {e}")
         return JsonResponse({"status": "error", "message": "An error occurred while verifying OTP."}, status=500)
 
-@csrf_protect
 @require_POST
 def verify_login_email(request):
     try:
@@ -581,7 +570,6 @@ def verify_login_email(request):
         messages.error(f"Error verifying login OTP: {e}")
         return JsonResponse({"status": "error", "message": "Server error during email verification."}, status=500)
 
-@csrf_protect
 @require_POST
 def generate_roadmap_view(request):
     try:
@@ -602,7 +590,6 @@ def generate_roadmap_view(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
     
-@csrf_protect
 @require_POST
 def run_code(request):
     if request.method == "POST":

@@ -25,6 +25,24 @@ function getCookie(name) {
     return cookieValue;
 }
 
+async function fetchJson(url, options = {}) {
+    const res = await fetch(url, options);
+    const contentType = res.headers.get('content-type') || '';
+    if (!res.ok) {
+        // try to show body text for debugging
+        const txt = await res.text().catch(() => '');
+        console.error(`Fetch error ${res.status} ${res.statusText} for ${url}`, txt);
+        throw new Error(`HTTP ${res.status} ${res.statusText}`);
+    }
+    if (contentType.includes('application/json')) {
+        return res.json();
+    } else {
+        const txt = await res.text().catch(() => '');
+        console.error(`Expected JSON but got ${contentType} for ${url}`, txt);
+        throw new Error('Invalid JSON response');
+    }
+}
+
 const csrftoken = getCookie("csrftoken");
 
 // Language selection
@@ -173,8 +191,7 @@ function setupRoller(topics, lang) {
         fetchFilteredVideos(lang, topicName);
 
         // Start backend fetching process
-        fetch(`/get_videos/?language=${lang}&topic=${encodeURIComponent(topicName)}`)
-            .then(res => res.json())
+        fetchJson(`/get_videos/?language=${lang}&topic=${encodeURIComponent(topicName)}`)
             .catch(err => console.error("Error triggering background fetch:", err));
 
         // Begin polling for processing updates
@@ -226,10 +243,10 @@ function pollForVideosResults(language, topicName) {
         container.innerHTML = "<p>Auto-refresh stopped after 30 minutes. Select the topic again to refresh.</p>";
         return;
     }
+    
 
-    fetch(`/get_filtered_videos/?language=${language}&topic=${encodeURIComponent(topicName)}`)
-        .then(res => res.json())
-        .then(data => {
+    fetchJson(`/get_filtered_videos/?language=${language}&topic=${encodeURIComponent(topicName)}`)
+    .then(data => {
             renderVideos(container, data);
             if (data.fetching) {
                 activePolling = setTimeout(() => pollForVideosResults(language, topicName), POLLING_INTERVAL);
@@ -299,9 +316,10 @@ function fetchFilteredVideos(language, topicName) {
     const container = document.getElementById("video-container");
     if (!container) return;
 
-    fetch(`/get_filtered_videos/?language=${language}&topic=${encodeURIComponent(topicName)}`)
-        .then(res => res.json())
-        .then(data => renderVideos(container, data))
+fetchJson(`/get_filtered_videos/?language=${language}&topic=${encodeURIComponent(topicName)}`)
+    .then(data => {
+        renderVideos(container, data);
+    })
         .catch(err => container.innerHTML = "<p>Error fetching videos.</p>");
 }
 
