@@ -1,4 +1,3 @@
-# --- Django core ---
 Django
 daphne
 gunicorn
@@ -8,21 +7,10 @@ requests
 isodate
 Pillow
 uvicorn
-gunicorn
-whitenoise
-python-dotenv
-requests
-isodate
-
-# --- AI and Groq ---
 groq
 tiktoken
 langchain-core
 langchain-groq
-
-# --- YouTube, Whisper, and media ---
 yt-dlp
 youtube-transcript-api
 pydub
-openai-whisper
-ffmpeg-python
