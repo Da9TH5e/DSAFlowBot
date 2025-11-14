@@ -59,23 +59,23 @@ document.getElementById("language").addEventListener("change", function() {
     clearInterval(filteredInterval);
     clearTimeout(filteredTimeout);
 
-    fetch("/set-language/", {
+    fetchJson("/set-language/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": csrftoken
         },
-        body: JSON.stringify({ language: selectedLanguage})
+        body: JSON.stringify({ language: selectedLanguage })
     })
-    .then(response => response.json())
     .then(data => {
-        if(data.redirect) window.location.href = data.redirect;
+        if (data.redirect) window.location.href = data.redirect;
     })
     .catch(error => console.error("Error:", error));
+
 });
 
 function topicDefinition(language, topicName) {
-    fetch('/get_topic/' , {
+    fetchJson('/get_topic/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -83,14 +83,14 @@ function topicDefinition(language, topicName) {
         },
         body: JSON.stringify({ language, topic: topicName })
     })
-    .then(res => res.json())
     .then(data => {
         const defContainer = document.getElementById('topic-summary');
         if(defContainer) {
-            defContainer.textContent = data.summary || 'Definition not avaliable.';
+            defContainer.textContent = data.summary || 'Definition not available.';
         }
     })
     .catch(err => console.error('Error fetching topic definition:', err));
+
 }
 
 // Roller setup
@@ -336,7 +336,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     fetch(`/roadmap/?language=${lang}`)
-        .then(res => res.json())
         .then(data => {
             const raw = data?.roadmap?.topics;
             let topics = [];
@@ -365,7 +364,7 @@ document.getElementById("generate-roadmap-btn").addEventListener("click", async 
     }
 
     try {
-        const response = await fetch("/generate_roadmap/", {
+        const data = await fetchJson("/generate_roadmap/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -373,10 +372,8 @@ document.getElementById("generate-roadmap-btn").addEventListener("click", async 
             },
             body: JSON.stringify({ language }),
         });
-
-        const data = await response.json();
-
-        if (response.ok) {
+        
+        if (data) {
             showTopAlert("Roadmap generated successfully!");
 
             setTimeout(async () => {
