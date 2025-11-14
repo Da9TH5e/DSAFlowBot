@@ -25,23 +25,6 @@ function getCookie(name) {
     return cookieValue;
 }
 
-async function fetchJson(url, options = {}) {
-    const res = await fetch(url, options);
-    const contentType = res.headers.get('content-type') || '';
-    if (!res.ok) {
-        // try to show body text for debugging
-        const txt = await res.text().catch(() => '');
-        console.error(`Fetch error ${res.status} ${res.statusText} for ${url}`, txt);
-        throw new Error(`HTTP ${res.status} ${res.statusText}`);
-    }
-    if (contentType.includes('application/json')) {
-        return res.json();
-    } else {
-        const txt = await res.text().catch(() => '');
-        console.error(`Expected JSON but got ${contentType} for ${url}`, txt);
-        throw new Error('Invalid JSON response');
-    }
-}
 
 const csrftoken = getCookie("csrftoken");
 
@@ -59,7 +42,7 @@ document.getElementById("language").addEventListener("change", function() {
     clearInterval(filteredInterval);
     clearTimeout(filteredTimeout);
 
-    fetchJson("/set-language/", {
+    fetch("/set-language/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -67,6 +50,7 @@ document.getElementById("language").addEventListener("change", function() {
         },
         body: JSON.stringify({ language: selectedLanguage })
     })
+    .then(response => response.json())
     .then(data => {
         if (data.redirect) window.location.href = data.redirect;
     })
@@ -75,7 +59,7 @@ document.getElementById("language").addEventListener("change", function() {
 });
 
 function topicDefinition(language, topicName) {
-    fetchJson('/get_topic/', {
+    fetch('/get_topic/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -83,6 +67,7 @@ function topicDefinition(language, topicName) {
         },
         body: JSON.stringify({ language, topic: topicName })
     })
+    .then(response => response.json())
     .then(data => {
         const defContainer = document.getElementById('topic-summary');
         if(defContainer) {
@@ -369,7 +354,7 @@ document.getElementById("generate-roadmap-btn").addEventListener("click", async 
     }
 
     try {
-        const data = await fetchJson("/generate_roadmap/", {
+        const data = await fetch("/generate_roadmap/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -383,8 +368,8 @@ document.getElementById("generate-roadmap-btn").addEventListener("click", async 
 
             setTimeout(async () => {
                 try {
-                    const fetchResponse = await fetchJson(`/roadmap/?language=${language}`);
-                    const roadmapData = await fetchResponse.json();
+                    const response = await fetch(`/roadmap/?language=${language}`);
+                    const roadmapData = await response.json();
                     const raw = roadmapData?.roadmap?.topics;
                     let topics = [];
                     if (Array.isArray(raw)) {
