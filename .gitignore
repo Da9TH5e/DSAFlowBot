@@ -42,3 +42,4 @@ Thumbs.db
 *.bak
 *.tmp
 *.swp
+mysite/settings.py
