@@ -179,11 +179,16 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
+    'django': {
+        'handlers': ['console', 'file'],
+        'level': 'INFO',
         },
         'main_app': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'question_generator': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
             'propagate': False,
