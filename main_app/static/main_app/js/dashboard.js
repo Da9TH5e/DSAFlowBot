@@ -191,7 +191,8 @@ function setupRoller(topics, lang) {
         fetchFilteredVideos(lang, topicName);
 
         // Start backend fetching process
-        fetchJson(`/get_videos/?language=${lang}&topic=${encodeURIComponent(topicName)}`)
+        fetch(`/get_videos/?language=${lang}&topic=${encodeURIComponent(topicName)}`)
+            .then(res => res.json())
             .catch(err => console.error("Error triggering background fetch:", err));
 
         // Begin polling for processing updates
@@ -245,18 +246,20 @@ function pollForVideosResults(language, topicName) {
     }
     
 
-    fetchJson(`/get_filtered_videos/?language=${language}&topic=${encodeURIComponent(topicName)}`)
-    .then(data => {
-            renderVideos(container, data);
-            if (data.fetching) {
+    fetch(`/get_filtered_videos/?language=${language}&topic=${encodeURIComponent(topicName)}`)
+        .then(res => res.json())
+        .then(data => {
+                renderVideos(container, data);
+                if (data.fetching) {
+                    activePolling = setTimeout(() => pollForVideosResults(language, topicName), POLLING_INTERVAL);
+                }
+            })
+            .catch(err => {
+                container.innerHTML = "<p>Error fetching videos.</p>";
                 activePolling = setTimeout(() => pollForVideosResults(language, topicName), POLLING_INTERVAL);
             }
-        })
-        .catch(err => {
-            container.innerHTML = "<p>Error fetching videos.</p>";
-            activePolling = setTimeout(() => pollForVideosResults(language, topicName), POLLING_INTERVAL);
-        });
-}
+        );
+    }
 
 function renderVideos(container, data) {
     const buttonStates = {};
@@ -316,12 +319,13 @@ function fetchFilteredVideos(language, topicName) {
     const container = document.getElementById("video-container");
     if (!container) return;
 
-fetchJson(`/get_filtered_videos/?language=${language}&topic=${encodeURIComponent(topicName)}`)
+fetch(`/get_filtered_videos/?language=${language}&topic=${encodeURIComponent(topicName)}`)
+    .then(res => res.json())    
     .then(data => {
-        renderVideos(container, data);
-    })
-        .catch(err => container.innerHTML = "<p>Error fetching videos.</p>");
-}
+            renderVideos(container, data);
+        })
+            .catch(err => container.innerHTML = "<p>Error fetching videos.</p>");
+    }
 
 window.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
@@ -335,7 +339,8 @@ window.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    fetchJson(`/roadmap/?language=${lang}`)
+    fetch(`/roadmap/?language=${lang}`)
+        .then(res => res.json())
         .then(data => {
             const raw = data?.roadmap?.topics;
             let topics = [];
