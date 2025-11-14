@@ -158,40 +158,44 @@ os.makedirs(LOGS_DIR, exist_ok=True)
 log_filename = datetime.now().strftime("run_%Y-%m-%d_%H-%M-%S.log")
 log_path = os.path.join(LOGS_DIR, log_filename)
 
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'default': {
-            'format': '%(asctime)s - %(levelname)s - %(message)s',
-            'datefmt': '%Y-%m-%d %H:%M:%S',
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {levelname} {name}: {message}",
+            "style": "{",
         },
     },
-    'handlers': {
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': log_path,
-            'formatter': 'default',
-        },
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'default',
+
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(LOG_DIR, "dsaflowbot.log"),
+            "formatter": "verbose",
         },
     },
-    'loggers': {
-    'django': {
-        'handlers': ['console', 'file'],
-        'level': 'INFO',
+
+    "loggers": {
+        "": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": True,
         },
-        'main_app': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': False,
+        "question_generator": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": False,
         },
-        'question_generator': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': False,
+        "main_app": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": False,
         },
     },
 }
