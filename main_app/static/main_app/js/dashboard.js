@@ -335,7 +335,7 @@ window.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    fetch(`/roadmap/?language=${lang}`)
+    fetchJson(`/roadmap/?language=${lang}`)
         .then(data => {
             const raw = data?.roadmap?.topics;
             let topics = [];
@@ -378,7 +378,7 @@ document.getElementById("generate-roadmap-btn").addEventListener("click", async 
 
             setTimeout(async () => {
                 try {
-                    const fetchResponse = await fetch(`/roadmap/?language=${language}`);
+                    const fetchResponse = await fetchJson(`/roadmap/?language=${language}`);
                     const roadmapData = await fetchResponse.json();
                     const raw = roadmapData?.roadmap?.topics;
                     let topics = [];
