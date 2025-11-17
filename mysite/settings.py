@@ -178,6 +178,7 @@ LOGGING = {
             "class": "logging.FileHandler",
             "filename": os.path.join(LOG_DIR, "dsaflowbot.log"),
             "formatter": "verbose",
+            "encoding": "utf-8",
         },
     },
 
