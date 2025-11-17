@@ -63,43 +63,56 @@ async def download_audio(video_url: str, video_id) -> list:
 
 
 async def get_or_generate_transcript(video_url: str, video_id) -> str:
-    """Async pipeline: transcript from YouTube or audio split and processed."""
     try:
-        transcript_obj = await sync_to_async(Transcript.objects.get)(video__video_id=video_id)
+        transcript_obj = await sync_to_async(Transcript.objects.get)(
+            video__video_id=video_id
+        )
         return transcript_obj.content
     except Transcript.DoesNotExist:
         pass
 
-    transcript_text = None    
+    transcript_text = None
     try:
         transcript = YouTubeTranscriptApi.get_transcript(video_id)
-        transcript_text = " ".join([t['text'] for t in transcript])
-
+        transcript_text = " ".join([t["text"] for t in transcript])
     except Exception as e:
-        logger.warning(f"YouTube transcript fetch failed: {str(e)}")
+        logger.warning(f"YouTube transcript fetch failed: {e}")
 
-    if not transcript_text:
+    if transcript_text is None:
+        logger.info(f"Downloading audio for {video_id} with cookie rotation...")
+
         audio_paths = await download_audio(video_url, video_id)
         if not audio_paths:
-            logger.error("Audio could not be downloaded or split.")
+            logger.error("Audio download failed.")
             return None
 
         transcript_text = ""
+        loop = asyncio.get_event_loop()
+
         for path in audio_paths:
-            loop = asyncio.get_event_loop()
-            part = await loop.run_in_executor(None, transcribe_audio_with_whisper, path)
+            part = await loop.run_in_executor(
+                None,
+                transcribe_audio_with_whisper,
+                path
+            )
             if part:
                 transcript_text += part.strip() + "\n"
             cleanup_audio(path)
+
         transcript_text = transcript_text.strip()
 
     if transcript_text:
         video_obj, _ = await sync_to_async(Video.objects.get_or_create)(
-            video_id=video_id, 
+            video_id=video_id,
             defaults={"title": "Unknown"}
-            )
-        await sync_to_async(Transcript.objects.create)(video=video_obj, content=transcript_text)
-        return transcript_text
+        )
+        await sync_to_async(Transcript.objects.create)(
+            video=video_obj, 
+            content=transcript_text
+        )
+
+    return transcript_text
+
 
 def split_audio_file(file_path: str) -> list[str]:
     """Split audio into 2 parts and return the new file paths"""
