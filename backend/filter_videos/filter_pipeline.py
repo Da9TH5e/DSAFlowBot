@@ -182,22 +182,19 @@ class VideoFilter:
 
     def _download_audio(self, url: str, output_path: str) -> bool:
         """Download audio from YouTube video."""
-        loop = asyncio.get_event_loop()
-        cookie_dir = os.getenv("YTDLP_COOKIES_DIR", "cookies")
 
-        success = loop.run_in_executor(
-            None,
-            rotate_cookies_and_download,
-            url,
-            output_path,
-            cookie_dir,
-        )
+        try:
+            cookie_dir = os.getenv("YTDLP_COOKIES_DIR", "cookies")
+            success = rotate_cookies_and_download(url, output_path, cookie_dir)
 
-        if not success:
-            logger.error(f"Audio download failed for {url}")
+            if not success:
+                logger.error(f"Audio download failed for {url}")
+                return False
+            
+            return os.path.exists(output_path)
+        except Exception as e:
+            logger.error(f"Audio download error: {e}")
             return False
-        
-        return True
 
     def _trim_audio(self, input_path: str, output_path: str, duration: int = 300) -> bool:
         """Trim audio to specified duration."""

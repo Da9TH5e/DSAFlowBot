@@ -14,7 +14,7 @@ from asgiref.sync import sync_to_async
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from question_generator.generator import generate_questions
-from youtube_videos.transcript_utils import download_audio, get_or_generate_transcript
+from youtube_videos.transcript_utils import get_or_generate_transcript
 from youtube_videos.youtube_api import search_youtube_videos, get_youtube_transcript
 from youtube_videos.utils import extract_video_id
 
@@ -47,28 +47,24 @@ async def process_video(video_title, video_desc, video_url, topic_name, language
         transcript_obj = await sync_to_async(lambda: video.transcript)()
         transcript = transcript_obj.content
         logger.info("Transcript already exists in DB")
-
     except Transcript.DoesNotExist:
-        logger.info("No existing transcript found.")
         transcript = None
+        logger.info("No existing transcript found.")
 
     if not transcript:
         transcript = await get_youtube_transcript(video_id)
-        if not transcript:
-            logger.info("No transcript via YouTube API, trying audio transcription...")
-            audio_path = await download_audio(video_url, video_id)
-            if not audio_path:
-                audio_path = download_with_yt_dlp(video_url)
-            if audio_path:
-                transcript = await get_or_generate_transcript(video_url, video_id)
 
-        if transcript:
-            await sync_to_async(Transcript.objects.update_or_create)(
-                video=video,
-                defaults={"content": transcript}
-            )
-            logger.info("Transcript saved/updated in DB.")
 
+    if not transcript:
+        logger.info("No transcript via YouTube API, trying audio transcription...")
+        transcript = await get_or_generate_transcript(video_url, video_id)
+
+    if transcript:
+        await sync_to_async(Transcript.objects.update_or_create)(
+            video=video,
+            defaults={"content": transcript}
+        )
+        logger.info("Transcript saved/updated in DB.")
 
     if transcript:
         max_retries = 5

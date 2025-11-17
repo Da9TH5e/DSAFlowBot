@@ -62,52 +62,98 @@ async def download_audio(video_url: str, video_id) -> list:
     return []
 
 
-async def get_or_generate_transcript(video_url: str, video_id) -> str:
+async def get_or_generate_transcript(video_url: str, video_id: str) -> str:
+    """Main pipeline: DB → YouTube API → cached audio → download audio → transcribe → save"""
+    loop = asyncio.get_event_loop()
+
+    # ---------------------------------------------------
+    # STEP 1 — check transcript in DB
+    # ---------------------------------------------------
     try:
         transcript_obj = await sync_to_async(Transcript.objects.get)(
             video__video_id=video_id
         )
+        logger.info(f"Transcript already in DB for {video_id}")
         return transcript_obj.content
     except Transcript.DoesNotExist:
         pass
 
     transcript_text = None
+
+    # ---------------------------------------------------
+    # STEP 2 — Try YouTube transcript API
+    # ---------------------------------------------------
     try:
         transcript = YouTubeTranscriptApi.get_transcript(video_id)
         transcript_text = " ".join([t["text"] for t in transcript])
+        logger.info("Fetched transcript from YouTube API.")
     except Exception as e:
-        logger.warning(f"YouTube transcript fetch failed: {e}")
+        logger.warning(f"YouTube transcript failed: {e}")
 
+    # ---------------------------------------------------
+    # STEP 3 — Try cached audio files (no re-download)
+    # ---------------------------------------------------
     if transcript_text is None:
-        logger.info(f"Downloading audio for {video_id} with cookie rotation...")
+        mp3_full = os.path.join(AUDIO_CACHE_DIR, f"{video_id}.mp3")
+        part1 = mp3_full.replace(".mp3", "_part1.mp3")
+        part2 = mp3_full.replace(".mp3", "_part2.mp3")
 
-        audio_paths = await download_audio(video_url, video_id)
-        if not audio_paths:
+        if os.path.exists(part1) and os.path.exists(part2):
+            logger.info("Found cached split audio — using it.")
+            transcript_text = ""
+            transcript_text += transcribe_audio_with_whisper(part1) or ""
+            transcript_text += "\n"
+            transcript_text += transcribe_audio_with_whisper(part2) or ""
+            transcript_text = transcript_text.strip()
+
+        # If full audio exists but parts don't → split locally
+        elif os.path.exists(mp3_full):
+            logger.info("Found cached full audio — splitting locally.")
+            parts = split_audio_file(mp3_full)
+            transcript_text = ""
+            for part in parts:
+                transcript_text += (transcribe_audio_with_whisper(part) or "") + "\n"
+            transcript_text = transcript_text.strip()
+
+    # ---------------------------------------------------
+    # STEP 4 — No cached audio → download audio now
+    # ---------------------------------------------------
+    if transcript_text is None:
+        logger.info(f"No cached audio. Downloading fresh audio for {video_id}...")
+
+        mp3_full = os.path.join(AUDIO_CACHE_DIR, f"{video_id}.mp3")
+        cookie_dir = os.getenv("YTDLP_COOKIES_DIR", "cookies")
+
+        # Perform download using cookie rotation (runs in threadpool)
+        downloaded = await loop.run_in_executor(
+            None,
+            rotate_cookies_and_download,
+            video_url,
+            mp3_full,
+            cookie_dir
+        )
+
+        if not downloaded or not os.path.exists(mp3_full):
             logger.error("Audio download failed.")
             return None
 
+        # Split freshly downloaded audio
+        parts = split_audio_file(mp3_full)
         transcript_text = ""
-        loop = asyncio.get_event_loop()
-
-        for path in audio_paths:
-            part = await loop.run_in_executor(
-                None,
-                transcribe_audio_with_whisper,
-                path
-            )
-            if part:
-                transcript_text += part.strip() + "\n"
-            cleanup_audio(path)
-
+        for part in parts:
+            transcript_text += (transcribe_audio_with_whisper(part) or "") + "\n"
         transcript_text = transcript_text.strip()
 
+    # ---------------------------------------------------
+    # STEP 5 — Save transcript to DB
+    # ---------------------------------------------------
     if transcript_text:
         video_obj, _ = await sync_to_async(Video.objects.get_or_create)(
             video_id=video_id,
             defaults={"title": "Unknown"}
         )
         await sync_to_async(Transcript.objects.create)(
-            video=video_obj, 
+            video=video_obj,
             content=transcript_text
         )
 
