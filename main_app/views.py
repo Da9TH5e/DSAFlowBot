@@ -552,7 +552,6 @@ def verify_login_email(request):
         if not email or not otp:
             return JsonResponse({"status": "error", "message": "Both email and OTP are required."}, status=400)
 
-        # ✅ STEP 1: Get user that is pending verification (if stored in session)
         pending_user_id = request.session.get("pending_verification_user")
         if pending_user_id:
             pending_user = User.objects.filter(id=pending_user_id).first()
@@ -560,11 +559,15 @@ def verify_login_email(request):
                 return JsonResponse({"status": "error", "message": "Unauthorized verification attempt."}, status=403)
             user = pending_user
         else:
-            # Fallback for normal flow (e.g. from login)
             user = User.objects.filter(email=email).first()
 
         if not user:
             return JsonResponse({"status": "error", "message": "Invalid email."}, status=404)
+        
+        else:
+            user.is_active = True
+            user.save()
+            return JsonResponse({"status": "ok", "message": "Email verified successfully."})
 
     except Exception as e:
         messages.error(f"Error verifying login OTP: {e}")
