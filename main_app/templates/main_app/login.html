@@ -111,11 +111,20 @@
     animation: fadeInOut 3s ease forwards;
   }
 
+  #toggle-password svg:nth-child(1) {
+    display: none; /* open eye hidden initially */
+  }
+
+  #toggle-password svg:nth-child(2) {
+    display: inline; /* closed eye visible initially */
+  }
+
+
   #verify-email[readonly] {
-  background-color: #2d2d2d;
-  cursor: not-allowed;
-  color: #aaa;
-}
+    background-color: #2d2d2d;
+    cursor: not-allowed;
+    color: #aaa;
+  }
 
   </style>
 </head>
@@ -188,6 +197,7 @@
     const timerText = document.getElementById("timer-text");
     const emailInput = document.getElementById("verify-email");
     const otpInput = document.getElementById("verify-otp");
+    const toggle_password = document.getElementById("toggle-password");
 
     const loginContainer = document.getElementById("login-container");
 
@@ -263,6 +273,24 @@
         document.body.appendChild(alertBox);
         setTimeout(() => alertBox.remove(), 3000);
       }
+
+      toggle_password.addEventListener("click", () => {
+          const passwordInput = document.getElementById("id_password");
+          const icons = toggle_password.querySelectorAll("svg");
+
+          if (passwordInput.type === "password") {
+              // User wants to SEE the password
+              passwordInput.type = "text";
+              icons[0].style.display = "inline";  // show open eye
+              icons[1].style.display = "none";    // hide closed eye
+          } else {
+              // User wants to HIDE the password
+              passwordInput.type = "password";
+              icons[0].style.display = "none";    // hide open eye
+              icons[1].style.display = "inline";  // show closed eye
+          }
+      });
+
   </script>
 </body>
 </html>

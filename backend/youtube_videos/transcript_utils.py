@@ -3,6 +3,7 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import shutil
+from backend.youtube_videos.cookie_manager import rotate_cookies_and_download
 from pydub import AudioSegment
 import os
 import yt_dlp
@@ -21,39 +22,43 @@ MAX_RETRIES = 3
 RETRY_DELAY = 2
 
 async def download_audio(video_url: str, video_id) -> list:
-    """Download and split audio into two parts asynchronously"""
+    """Download and split audio using cookie rotation."""
     loop = asyncio.get_event_loop()
     output_path = os.path.join(AUDIO_CACHE_DIR, f"{video_id}.mp3")
+    cookie_dir = os.getenv("YTDLP_COOKIES_DIR", "cookies")
+
+    if os.path.exists(output_path):
+        os.remove(output_path)
+
+    logger.info(f"Downloading audio for {video_id} with cookie rotation...")
 
     for attempt in range(MAX_RETRIES):
         try:
-            if os.path.exists(output_path):
-                os.remove(output_path)
+            success = await loop.run_in_executor(
+                None,
+                rotate_cookies_and_download,
+                video_url,
+                output_path,
+                cookie_dir
+            )
 
-            ydl_opts = {
-                'format': 'bestaudio/best',
-                'outtmpl': output_path.replace('.mp3', '.%(ext)s'),
-                'quiet': True,
-                'no_warnings': True,
-                'postprocessors': [{
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'mp3',
-                    'preferredquality': '192',
-                }]
-            }
+            if not success:
+                logger.warning(f"Attempt {attempt+1}: Cookie rotation failed.")
+                await asyncio.sleep(RETRY_DELAY * (attempt + 1))
+                continue
 
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(video_url, download=True)
-                downloaded_path = ydl.prepare_filename(info)
+            if not os.path.exists(output_path):
+                logger.error(f"Download success reported but file missing: {output_path}")
+                return []
 
-                if os.path.exists(output_path):
-                    with ThreadPoolExecutor() as executor:
-                        return await loop.run_in_executor(executor, split_audio_file, output_path)
+            with ThreadPoolExecutor() as executor:
+                return await loop.run_in_executor(executor, split_audio_file, output_path)
 
-            return []
         except Exception as e:
-            logger.warning(f"Audio download failed: {attempt + 1} - {str(e)}")
+            logger.error(f"Error on attempt {attempt+1}: {e}")
             await asyncio.sleep(RETRY_DELAY * (attempt + 1))
+
+    logger.error(f"ALL attempts failed for video {video_id}")
     return []
 
 
