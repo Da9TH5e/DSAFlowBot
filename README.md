@@ -28,8 +28,8 @@ The website is under maintaince and ill be live soon
 |------------|-----------|
 | Backend | ✅ Completed |
 | Database & Models | ✅ Integrated |
-| Frontend | 🚧 In Progress |
-| Deployment | 🚀 Going Live Sunday |
+| Frontend | ✅ Completed |
+| Deployment | 🚀 Going Live Soon |
 
 ---
 
