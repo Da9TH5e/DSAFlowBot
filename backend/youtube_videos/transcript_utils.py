@@ -99,8 +99,7 @@ async def get_or_generate_transcript(video_url: str, video_id) -> str:
             defaults={"title": "Unknown"}
             )
         await sync_to_async(Transcript.objects.create)(video=video_obj, content=transcript_text)
-
-    return transcript_text
+        return transcript_text
 
 def split_audio_file(file_path: str) -> list[str]:
     """Split audio into 2 parts and return the new file paths"""
