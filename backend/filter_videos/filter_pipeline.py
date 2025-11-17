@@ -1,10 +1,12 @@
 # --- filter_videos/filter_pipeline.py ---
 
+import asyncio
 import json
 import os
 import sys
 import tempfile
 import yt_dlp
+from backend.youtube_videos.cookie_manager import rotate_cookies_and_download
 from groq import Groq
 from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
@@ -180,29 +182,22 @@ class VideoFilter:
 
     def _download_audio(self, url: str, output_path: str) -> bool:
         """Download audio from YouTube video."""
-        ydl_opts = {
-            'retries': 5,
-            'fragment_retries': 5,
-            'socket_timeout': 30,
-            'nopart': True,
-            'quiet': True,
-            'extract_audio': True,
-            'format': 'bestaudio/best',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
-            'outtmpl': output_path.replace('.mp3', ''),
-        }
+        loop = asyncio.get_event_loop()
+        cookie_dir = os.getenv("YTDLP_COOKIES_DIR", "cookies")
 
-        try:
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([url])
-            return os.path.exists(output_path)
-        except Exception as e:
-            logger.error(f"Audio download failed: {e}")
+        success = loop.run_in_executor(
+            None,
+            rotate_cookies_and_download,
+            url,
+            output_path,
+            cookie_dir,
+        )
+
+        if not success:
+            logger.error(f"Audio download failed for {url}")
             return False
+        
+        return True
 
     def _trim_audio(self, input_path: str, output_path: str, duration: int = 300) -> bool:
         """Trim audio to specified duration."""
