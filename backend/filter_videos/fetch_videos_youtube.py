@@ -2,6 +2,7 @@
 import shutil
 import sys
 import os
+from youtube_videos.tasks import process_video_task
 from asgiref.sync import sync_to_async
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -58,27 +59,20 @@ async def fetching_videos(language: str, topic_name: str):
     topic_obj.is_fully_processed = True
     await sync_to_async(lambda: topic_obj.save())()
 
+    task_ids = []
+
     logger.info("\nProcessing filtered videos...\n")
     for video in filtered_videos:
-        logger.info(f"Processing {video['title']}")
-        await process_video(video['title'], video['description'], video['url'], topic_name, language)
+        async_result = process_video_task.delay(
+            video['title'], 
+            video['description'], 
+            video['url'], 
+            topic_name, 
+            language
+        )
+        task_ids.append(async_result.id)
 
-    audio_cache_path = os.path.join(
-        os.path.dirname(__file__), 
-        "..", "youtube_videos", "audio_cache"
-    )
-    audio_cache_path = os.path.abspath(audio_cache_path)
-
-    if os.path.exists(audio_cache_path):
-        try:
-            shutil.rmtree(audio_cache_path)
-            logger.info(f"Cleaned up audio_cache folder: {audio_cache_path}")
-        except Exception as e:
-            logger.error(f"Error removing audio_cache folder: {e}")
-    else:
-        logger.info("audio_cache folder does not exist — skipping cleanup.")
-
-
+    logger.info(f"Enqueued {len(task_ids)} video tasks.")
 
 async def found_video(video_ID: str) -> bool:
     """Return True only if video, transcript, and questions exist for this video_ID."""

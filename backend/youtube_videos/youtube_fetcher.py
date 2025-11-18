@@ -17,10 +17,7 @@ from question_generator.generator import generate_questions
 from youtube_videos.transcript_utils import get_or_generate_transcript
 from youtube_videos.youtube_api import search_youtube_videos, get_youtube_transcript
 from youtube_videos.utils import extract_video_id
-
-TEMP_AUDIO_DIR = os.path.join(tempfile.gettempdir(), "youtube_audio_temp")
-os.makedirs(TEMP_AUDIO_DIR, exist_ok=True)
-
+from youtube_videos.cleanup_utils import cleanup_video_audio
 
 async def process_video(video_title, video_desc, video_url, topic_name, language):
     logger.info(f"Processing: {video_url}")
@@ -60,7 +57,7 @@ async def process_video(video_title, video_desc, video_url, topic_name, language
         transcript = await get_or_generate_transcript(video_url, video_id)
 
     if transcript:
-        await sync_to_async(Transcript.objects.update_or_create)(
+        transcript_obj, _ = await sync_to_async(Transcript.objects.update_or_create)(
             video=video,
             defaults={"content": transcript}
         )
@@ -83,23 +80,13 @@ async def process_video(video_title, video_desc, video_url, topic_name, language
                     logger.error(f"Error generating questions: {e}")
                     break
 
+    try:
+        cleanup_video_audio(video_id)
+        logger.info(f"Cleaned temp audio files for video {video_id}.")
+    except Exception as e:
+        logger.error(f"Audio cleanup error for {video_id}: {e}")
+
 
 def fetch_videos(query, max_results=5):
     return search_youtube_videos(query, max_results)
 
-
-def download_with_yt_dlp(video_url):
-    try:
-        import yt_dlp
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'outtmpl': os.path.join(TEMP_AUDIO_DIR, '%(id)s.%(ext)s'),
-            'quiet': True,
-            'no_warnings': True,
-        }
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(video_url, download=True)
-            return ydl.prepare_filename(info)
-    except Exception as e:
-        logger.error(f"yt-dlp fallback failed: {e}")
-        return None
