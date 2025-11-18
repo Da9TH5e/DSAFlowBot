@@ -168,36 +168,52 @@ LOGGING = {
 
     "formatters": {
         "verbose": {
-            "format": "[{asctime}] {levelname} {name}: {message}",
+            "format": "[{asctime}] {levelname} {name}:{lineno}: {message}",
             "style": "{",
         },
     },
 
     "handlers": {
         "file": {
-            "level": "INFO",
             "class": "logging.FileHandler",
             "filename": os.path.join(LOG_DIR, "dsaflowbot.log"),
             "formatter": "verbose",
             "encoding": "utf-8",
+            "level": "INFO",
         },
     },
 
     "loggers": {
-        "": {
+        "": {  # Root logger
             "handlers": ["file"],
             "level": "INFO",
-            "propagate": True,
+        },
+
+        # Add these for fine-grained logging:
+        "filter_videos": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": False
+        },
+        "youtube_videos": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": False
         },
         "question_generator": {
             "handlers": ["file"],
             "level": "INFO",
-            "propagate": False,
+            "propagate": False
         },
-        "main_app": {
+        "backend": {
             "handlers": ["file"],
             "level": "INFO",
-            "propagate": False,
+            "propagate": False
+        },
+        "celery": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": False
         },
     },
 }
