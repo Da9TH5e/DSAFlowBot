@@ -23,10 +23,16 @@ load_dotenv(BASE_DIR / ".env")
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 SECRET_KEY = os.getenv("SECRET_KEY")
+DEBUG = False
 
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+# Hosts allowed to access your Django app
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
+# Security settings (correct for Hostinger reverse proxy)
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
@@ -168,36 +174,52 @@ LOGGING = {
 
     "formatters": {
         "verbose": {
-            "format": "[{asctime}] {levelname} {name}: {message}",
+            "format": "[{asctime}] {levelname} {name}:{lineno}: {message}",
             "style": "{",
         },
     },
 
     "handlers": {
         "file": {
-            "level": "INFO",
             "class": "logging.FileHandler",
             "filename": os.path.join(LOG_DIR, "dsaflowbot.log"),
             "formatter": "verbose",
             "encoding": "utf-8",
+            "level": "INFO",
         },
     },
 
     "loggers": {
-        "": {
+        "": {  # Root logger
             "handlers": ["file"],
             "level": "INFO",
-            "propagate": True,
+        },
+
+        # Add these for fine-grained logging:
+        "filter_videos": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": False
+        },
+        "youtube_videos": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": False
         },
         "question_generator": {
             "handlers": ["file"],
             "level": "INFO",
-            "propagate": False,
+            "propagate": False
         },
-        "main_app": {
+        "backend": {
             "handlers": ["file"],
             "level": "INFO",
-            "propagate": False,
+            "propagate": False
+        },
+        "celery": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": False
         },
     },
 }

@@ -32,8 +32,9 @@ def download_with_cookie(url: str, cookiefile: str | None, output_path: str) -> 
         "cookiefile": cookiefile,
         "ignoreconfig": True,
         "noplugins": "all",
-        "quiet": True,
-        "no_warnings": True,
+        "quiet": False,          # <-- change this
+        "no_warnings": False,    # <-- change this
+        "progress_hooks": [progress_hook],
         "format": "bestaudio/best",
         "outtmpl": output_path.replace(".mp3", "") + ".%(ext)s",
         "postprocessors": [{
@@ -51,7 +52,17 @@ def download_with_cookie(url: str, cookiefile: str | None, output_path: str) -> 
     except Exception as e:
         logger.warning(f"Cookie failed ({cookiefile}): {e}")
         return False
+        
 
+def progress_hook(d):
+    if d["status"] == "downloading":
+        percent = d.get("_percent_str", "").strip()
+        speed = d.get("_speed_str", "").strip()
+        eta = d.get("_eta_str", "").strip()
+        logger.info(f"Downloading {percent} at {speed}, ETA: {eta}")
+    elif d["status"] == "finished":
+        logger.info(f"Download finished: {d.get('filename')}")
+        
 
 def rotate_cookies_and_download(url: str, output_path: str, cookie_dir: str) -> bool:
     """
