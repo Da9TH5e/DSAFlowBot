@@ -1,6 +1,6 @@
 from celery import shared_task
 import asyncio
-from youtube_videos.youtube_fetcher import process_video as process_video_async
+from backend.youtube_videos.youtube_fetcher import process_video as process_video_async
 
 @shared_task(bind=True)
 def process_video_task(self, video_title, video_desc, video_url, topic_name, language):
