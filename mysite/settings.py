@@ -35,6 +35,14 @@ SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+
+# Optional safety:
+CELERY_TASK_TIME_LIMIT = 3600          # 1 hour hard kill
+CELERY_TASK_SOFT_TIME_LIMIT = 3300     # 55 mins soft warning
+CELERY_TASK_ALWAYS_EAGER = False       # must be False for real async
+
 EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = os.getenv("EMAIL_HOST")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
