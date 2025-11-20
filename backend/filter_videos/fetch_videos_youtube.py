@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 async def fetching_videos(language: str, topic_name: str):
 
-    videos = await sync_to_async(fetch_videos)(f"{language} {topic_name}", max_results=20)
+    videos = await sync_to_async(fetch_videos)(f"{language} {topic_name}", max_results=5)
     if not videos:
         logger.error("No videos fetched.")
         return
