@@ -21,12 +21,13 @@ load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+os.environ["UVLOOP_DISABLED"] = "1"
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = False
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
->>>>>>> 9043353135fdc9f1baa2585e236cb2ebe1bfd729
 # Security settings (correct for Hostinger reverse proxy)
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = True
