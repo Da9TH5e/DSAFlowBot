@@ -65,7 +65,6 @@ async def fetching_videos(language: str, topic_name: str):
             video['description'],
             video['url'],
             topic_name,
-            language
         )
 
     logger.info(f"Enqueued {len(filtered_videos)} videos for full processing (transcribe + questions)")

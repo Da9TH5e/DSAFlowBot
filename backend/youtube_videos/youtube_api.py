@@ -68,7 +68,7 @@ def search_youtube_videos(query, max_results):
                 "url": f"https://www.youtube.com/watch?v={item['id']}"
             })
 
-    return results
+    return results[:max_results]
     
     
 async def get_youtube_transcript(video_id):

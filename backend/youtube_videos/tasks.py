@@ -1,8 +1,8 @@
-from celery import shared_task
-import asyncio
-from youtube_videos.youtube_fetcher import process_video as process_video_async
+from mysite.celery import app as celery_app
 
-@shared_task(bind=True)
+import asyncio
+from backend.youtube_videos.youtube_fetcher import process_video as process_video_async
+@celery_app.task(bind=True)
 def process_video_task(self, video_title, video_desc, video_url, topic_name, language):
     """
     Background task wrapper that runs your existing async process_video().
