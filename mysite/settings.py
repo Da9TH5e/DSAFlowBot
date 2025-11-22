@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
-from dotenv import load_dotenv
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,36 +21,22 @@ load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-os.environ["UVLOOP_DISABLED"] = "1"
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = False
+DEBUG = True
 
-# Hosts allowed to access your Django app
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 
-# Security settings (correct for Hostinger reverse proxy)
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+ALLOWED_HOSTS = ["*"]
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
-# Optional safety:
-CELERY_TASK_TIME_LIMIT = 3600          # 1 hour hard kill
-CELERY_TASK_SOFT_TIME_LIMIT = 3300     # 55 mins soft warning
-CELERY_TASK_ALWAYS_EAGER = False       # must be False for real async
-
-EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
-SERVER_EMAIL = os.getenv("SERVER_EMAIL", EMAIL_HOST_USER)
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False  
+SECURE_HSTS_PRELOAD = False
 
 # Application definition
 
@@ -166,61 +152,35 @@ os.makedirs(LOGS_DIR, exist_ok=True)
 log_filename = datetime.now().strftime("run_%Y-%m-%d_%H-%M-%S.log")
 log_path = os.path.join(LOGS_DIR, log_filename)
 
-LOG_DIR = BASE_DIR / "logs"
-LOG_DIR.mkdir(exist_ok=True)
-
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-
-    "formatters": {
-        "verbose": {
-            "format": "[{asctime}] {levelname} {name}:{lineno}: {message}",
-            "style": "{",
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '%(asctime)s - %(levelname)s - %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
         },
     },
-
-    "handlers": {
-        "file": {
-            "class": "logging.FileHandler",
-            "filename": os.path.join(LOG_DIR, "dsaflowbot.log"),
-            "formatter": "verbose",
-            "encoding": "utf-8",
-            "level": "INFO",
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': log_path,
+            'formatter': 'default',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
         },
     },
-
-    "loggers": {
-        "": {  # Root logger
-            "handlers": ["file"],
-            "level": "INFO",
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
         },
-
-        # Add these for fine-grained logging:
-        "filter_videos": {
-            "handlers": ["file"],
-            "level": "INFO",
-            "propagate": False
-        },
-        "youtube_videos": {
-            "handlers": ["file"],
-            "level": "INFO",
-            "propagate": False
-        },
-        "question_generator": {
-            "handlers": ["file"],
-            "level": "INFO",
-            "propagate": False
-        },
-        "backend": {
-            "handlers": ["file"],
-            "level": "INFO",
-            "propagate": False
-        },
-        "celery": {
-            "handlers": ["file"],
-            "level": "INFO",
-            "propagate": False
+        'main_app': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
         },
     },
 }

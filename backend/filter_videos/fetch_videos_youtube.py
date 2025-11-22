@@ -1,8 +1,7 @@
 # fetch_videos_youtube.py
-import shutil
 import sys
 import os
-from youtube_videos.tasks import process_video_task
+from backend.youtube_videos.tasks import process_video_task
 from asgiref.sync import sync_to_async
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -16,7 +15,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 async def fetching_videos(language: str, topic_name: str):
-
     videos = await sync_to_async(fetch_videos)(f"{language} {topic_name}", max_results=5)
     if not videos:
         logger.error("No videos fetched.")
@@ -30,49 +28,47 @@ async def fetching_videos(language: str, topic_name: str):
     new_video_list = []
 
     for vid in videos:
-        video_url = vid.get("url")
-        video_ID = extract_video_id(video_url)
-            
-        if await found_video(video_ID):
-            logger.info(f"Bool value :{await found_video(video_ID)}")
-            logger.info(f"Skipping (already fully processed): {vid.get('title')}")
-            continue
-        else:
+        video_id = extract_video_id(vid["url"])
+        if not await found_video(video_id):
             new_video_list.append(vid)
 
     if not new_video_list:
         logger.info("No new videos to process.")
         return
     
-    logger.info(f"{(new_video_list)}")
+    logger.info(f"Found {len(new_video_list)} new candidate videos. Applying AI filter...")
+
+    MAX_CANDIDATES = 10
+    new_video_list = new_video_list[:MAX_CANDIDATES]
+    logger.info(f"Limiting filtering to {len(new_video_list)} videos (max {MAX_CANDIDATES})")
 
     vf = VideoFilter()
     filtered_videos = await sync_to_async(vf.filter_videos_batch)(new_video_list, language, topic_name)
+    filtered_videos = filtered_videos[:8]
+
+    logger.info(f"Final selection: {len(filtered_videos)} videos to process")
 
     current_count = await sync_to_async(lambda: topic_obj.videos.count())()
-    total_filtered_videos = len(filtered_videos)
 
-    if total_filtered_videos > current_count:
-        topic_obj.total_videos = total_filtered_videos
+    if len(filtered_videos) > current_count:
+        topic_obj.total_videos = len(filtered_videos)
         await sync_to_async(topic_obj.save)()
         
     topic_obj.is_fully_processed = True
     await sync_to_async(lambda: topic_obj.save())()
 
-    task_ids = []
-
     logger.info("\nProcessing filtered videos...\n")
+
     for video in filtered_videos:
-        async_result = process_video_task.delay(
-            video['title'], 
-            video['description'], 
-            video['url'], 
-            topic_name, 
+        await process_video(
+            video['title'],
+            video['description'],
+            video['url'],
+            topic_name,
             language
         )
-        task_ids.append(async_result.id)
 
-    logger.info(f"Enqueued {len(task_ids)} video tasks.")
+    logger.info(f"Enqueued {len(filtered_videos)} videos for full processing (transcribe + questions)")
 
 async def found_video(video_ID: str) -> bool:
     """Return True only if video, transcript, and questions exist for this video_ID."""
