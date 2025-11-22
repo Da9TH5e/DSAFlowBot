@@ -87,6 +87,6 @@ async def process_video(video_title, video_desc, video_url, topic_name, language
         logger.error(f"Audio cleanup error for {video_id}: {e}")
 
 
-def fetch_videos(query, max_results=5):
+def fetch_videos(query, max_results=10):
     return search_youtube_videos(query, max_results)
 
