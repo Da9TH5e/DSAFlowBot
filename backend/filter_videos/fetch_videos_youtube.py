@@ -63,7 +63,7 @@ async def fetching_videos(language: str, topic_name: str):
 
     logger.info("\nProcessing filtered videos...\n")
     for video in filtered_videos:
-        async_result = process_video_task.delay(
+        async_result = process_video(
             video['title'], 
             video['description'], 
             video['url'], 
