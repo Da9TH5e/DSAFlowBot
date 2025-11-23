@@ -17,6 +17,7 @@ venv/
 db.sqlite3
 secret_key.txt
 .env
+audio_cache/
 logs/
 staticfiles/
 
