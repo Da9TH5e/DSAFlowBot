@@ -1,7 +1,6 @@
 # fetch_videos_youtube.py
 import sys
 import os
-from backend.youtube_videos.tasks import process_video_task
 from asgiref.sync import sync_to_async
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
