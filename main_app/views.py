@@ -151,27 +151,29 @@ def get_filtered_videos(request):
         lang_obj, _ = Language.objects.get_or_create(name=language.lower())
         topic_obj, _ = Topic.objects.get_or_create(language=lang_obj, name=topic_name)
 
-        videos = Video.objects.filter(topic=topic_obj)
-        videos_data = []
+        existing_videos = Video.objects.filter(topic=topic_obj)
+        current_count = existing_videos.count()
+        total_videos = topic_obj.total_videos
 
-        all_done = True
-        for v in videos:
-            transcript_done = Transcript.objects.filter(video=v).exists()
-            question_done = Question.objects.filter(video=v).exists()
+        fetching = current_count < total_videos or total_videos == 0
 
-            if not transcript_done or not question_done:
-                all_done = False
-
-            videos_data.append({
+        videos_data = [
+            {
                 "video_id": v.video_id,
                 "title": v.title,
                 "description": v.description,
                 "url": v.url,
-                "transcript_done": transcript_done,
-                "question_done": question_done,
-            })
+            }
+            for v in existing_videos
+        ]
         
-        return JsonResponse({"status": "ok", "videos": videos_data, "fetching": not all_done})
+        return JsonResponse({
+            "status": "ok",
+            "videos": videos_data,
+            "fetching": fetching,
+            "current": current_count,
+            "total": total_videos
+        })
         
     except Exception as e:
         return JsonResponse({"status": "error", "error": str(e)})
