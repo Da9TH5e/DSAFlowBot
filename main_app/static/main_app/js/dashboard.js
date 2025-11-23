@@ -224,13 +224,6 @@ function pollForVideosResults(language, topicName) {
     const container = document.getElementById("video-container");
     if (!container) return;
 
-    const elapsedTime = Date.now() - pollingStartTime;
-    if (elapsedTime >= MAX_POLLING_DURATION) {
-        container.innerHTML = "<p>Auto-refresh stopped after 30 minutes. Select the topic again to refresh.</p>";
-        return;
-    }
-    
-
     fetch(`/get_filtered_videos/?language=${language}&topic=${encodeURIComponent(topicName)}`)
         .then(res => res.json())
         .then(data => {
