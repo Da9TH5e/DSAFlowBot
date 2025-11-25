@@ -30,6 +30,7 @@ html, body {
     padding-left: 50px;
     font-size: 1.4rem;          
     color: white;
+    cursor: deafult;
 }
 
 .dashboard-nav-links {
