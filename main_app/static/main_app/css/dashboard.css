@@ -518,6 +518,7 @@ html, body {
         padding-left: 20px;
         font-size: 1.2rem;
         margin-bottom: 10px;
+        cursor: default;
     }
     
     .dashboard-nav-links {
