@@ -18,7 +18,7 @@
 ## 🧰 Tech Stack
 - **Backend:** Django
 - **Frontend:** HTML + CSS + Javascript  
-- **Database:** PostgreSQL  
+- **Database:** SQLite  
 - **AI Layer:** Python scripts for flow generation and question management  
 - **Deployment:** Hosted on Hostinger server along with a custom domain  
 
