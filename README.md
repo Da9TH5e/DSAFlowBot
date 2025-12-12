@@ -2,8 +2,7 @@
 
 **DSAFlowBot** is an intelligent assistant designed to streamline your Data Structures and Algorithms (DSA) practice. It generates topic-wise question flows, manages practice sessions, and helps you build a consistent routine with minimal friction.
 
-🌐 **Live Website:** https://dsaflowbot.bar/  
-⚠️ *Note: Performance is currently tuned down due to server-resource limitations.*
+*🚧 Under maintainance*
 
 ---
 
@@ -16,11 +15,11 @@
 ---
 
 ## 🧰 Tech Stack
-- **Backend:** Django + Django REST Framework  
-- **Frontend:** React (coming soon)  
-- **Database:** PostgreSQL  
+- **Backend:** Django
+- **Frontend:** HTML + CSS + Javascript  
+- **Database:** SQLite  
 - **AI Layer:** Python scripts for flow generation and question management  
-- **Deployment:** Dockerized setup for scalability  
+- **Deployment:** Hosted on Hostinger server along with a custom domain  
 
 ---
 
@@ -28,7 +27,7 @@
 | Component | Progress |
 |------------|-----------|
 | Backend | ✅ Completed |
-| Database & Models | ✅ Integrated |
+| Database & Models | ✅ Completed |
 | Frontend | ✅ Completed |
 | Deployment | ✅ Completed |
 
@@ -43,3 +42,4 @@ Developed by **Debarka Mandal** — blending AI, backend engineering, and DSA au
 
 ### ⭐ Support
 If you like the project, consider **starring ⭐ the repo** to show support and stay updated!
+Also if you want can suggest to add **features**
