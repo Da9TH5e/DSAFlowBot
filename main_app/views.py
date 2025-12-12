@@ -506,7 +506,7 @@ def send_reset_otp(request):
         return JsonResponse({"status": "ok", "message": f"OTP sent successfully to {email}."})
 
     except Exception as e:
-        messages.error(f"Error sending reset OTP: {e}")
+        messages.error(request, f"Error sending reset OTP: {e}")
         return JsonResponse({"status": "error", "message": "Failed to send OTP."}, status=500)
 
 @require_POST
