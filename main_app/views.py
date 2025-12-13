@@ -3,6 +3,8 @@
 import os
 import json
 import re
+import resend
+from django.conf import settings
 from asgiref.sync import async_to_sync
 from django.core.mail import send_mail
 from django.conf import settings
@@ -22,6 +24,8 @@ from backend.code_evaluator.judge0_executor import submit_code
 from django.contrib.auth import authenticate, login
 from backend.filter_videos.fetch_videos_youtube import fetching_videos
 from main_app.models import Language, Question, Roadmap, Topic, Transcript, User, Video, EmailVerification
+
+resend.api_key = settings.RESEND_API_KEY
 
 def home(request):
     return render(request, "main_app/home.html")
@@ -289,14 +293,17 @@ def login_view(request):
             verification.last_sent = timezone.now()
             verification.save()
 
-            send_mail(
-                subject="Verify your DSAFlowBot account",
-                message=f"Hello {user.username},\n\nYour verification code is: {otp_code}\n\nThis code expires in 10 minutes.",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],
-                fail_silently=False,
-            )
-
+            resend.Emails.send({
+                "from": f"DSAFlowBot <{settings.DEFAULT_FROM_EMAIL}>",
+                "to": [user.email],
+                "subject": "Verify your DSAFlowBot account",
+                "html": f"""
+                    <p>Hello <strong>{user.username}</strong>,</p>
+                    <p>Your verification code is:</p>
+                    <h2>{otp_code}</h2>
+                    <p>This code expires in 10 minutes.</p>
+                """,
+            })
             
             messages.warning(request, f"Your account is not verified. A code has been sent to {user.email}.")
             request.session["pending_verification_user"] = user.id
@@ -367,13 +374,17 @@ def signup_view(request):
         verification.last_sent = timezone.now()
         verification.save()
 
-        send_mail(
-            subject="Verify your DSAFlowBot account",
-            message=f"Hello {username},\n\nYour verification code is: {otp}\n\nThis code expires in 10 minutes.",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[email],
-            fail_silently=False,
-        )
+        resend.Emails.send({
+            "from": f"DSAFlowBot <{settings.DEFAULT_FROM_EMAIL}>",
+            "to": [email],
+            "subject": "Verify your DSAFlowBot account",
+            "html": f"""
+                <p>Hello <strong>{username}</strong>,</p>
+                <p>Your verification code is:</p>
+                <h2>{otp}</h2>
+                <p>This code expires in 10 minutes.</p>
+            """,
+        })
 
         request.session['pending_user'] = user.id
         messages.info(request, "A verification code has been sent to your email.")
@@ -461,13 +472,17 @@ def resend_otp(request):
 
     verification.generate_otp()
 
-    send_mail(
-        subject="Your new DSAFlowBot verification code",
-        message=f"Hello {user.username},\n\nYour new verification code is: {verification.otp}\n\nThis code expires in 10 minutes.",
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[user.email],
-        fail_silently=False,
-    )
+    resend.Emails.send({
+        "from": f"DSAFlowBot <{settings.DEFAULT_FROM_EMAIL}>",
+        "to": [user.email],
+        "subject": "Your new DSAFlowBot verification code",
+        "html": f"""
+            <p>Hello <strong>{user.username}</strong>,</p>
+            <p>Your new verification code is:</p>
+            <h2>{verification.otp}</h2>
+            <p>This code expires in 10 minutes.</p>
+        """,
+    })
 
     messages.success(request, "A new verification code has been sent to your email.")
     return redirect("verify_email")
@@ -495,13 +510,18 @@ def send_reset_otp(request):
         verification.created_at = timezone.now()
         verification.last_sent = timezone.now()
         verification.save()
-        send_mail(
-            subject="Verify your DSAFlowBot account",
-            message=f"Hello {user.username},\n\nYour verification code is: {otp_code}\n\nThis code expires in 10 minutes.",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-            fail_silently=False,
-        )
+        
+        resend.Emails.send({
+            "from": f"DSAFlowBot <{settings.DEFAULT_FROM_EMAIL}>",
+            "to": [user.email],
+            "subject": "Reset your DSAFlowBot password",
+            "html": f"""
+                <p>Hello <strong>{user.username}</strong>,</p>
+                <p>Your password reset code is:</p>
+                <h2>{otp_code}</h2>
+                <p>This code expires in 10 minutes.</p>
+            """,
+        })
 
         return JsonResponse({"status": "ok", "message": f"OTP sent successfully to {email}."})
 
