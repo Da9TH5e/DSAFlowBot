@@ -13,7 +13,10 @@
 - 🔹 Auto-generated DSA question sets by topic and difficulty  
 - 🔹 Intelligent question flow system for consistent practice  
 - 🔹 JSON-based session logging  
-- 🔹 Clean, optimized interface (currently for PC users only)  
+- 🔹 Clean, optimized interface (currently for PC users only)
+- 🔹 You can choose any picture from the display section in the signup page
+      ![profile_pics_dsaflowbot](https://github.com/user-attachments/assets/514676bb-d7d4-4296-ba8c-854df6d8b5a3)
+
 
 ---
 
