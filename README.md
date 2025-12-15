@@ -2,21 +2,22 @@
 
 **DSAFlowBot** is an intelligent assistant designed to streamline your Data Structures and Algorithms (DSA) practice. It generates topic-wise question flows, manages practice sessions, and helps you build a consistent routine with minimal friction.
 
-🌐 Live Server
-👉 **[Visit Live Server](https://dsaflowbot.bar/)**
+👉 https://dsaflowbot.bar
+> ⚠️ Note: Due to limited server resources, performance may occasionally be slower.
 
-> ⚠️ Due to server limitations, performance may be significantly reduced at times.
+
+### 🌐 Accessing the Live Application
+Demonstrates direct access to the deployed application using the custom domain.
+
+<img src="https://github.com/user-attachments/assets/e860c484-9b73-4ab4-9160-a5eacc128371" width="800"/>
 
 ---
 
 ## 🚀 Features
-- 🔹 Auto-generated DSA question sets by topic and difficulty  
-- 🔹 Intelligent question flow system for consistent practice  
-- 🔹 JSON-based session logging  
-- 🔹 Clean, optimized interface (currently for PC users only)
-- 🔹 You can choose any picture from the display section in the signup page
-      ![profile_pics_dsaflowbot](https://github.com/user-attachments/assets/514676bb-d7d4-4296-ba8c-854df6d8b5a3)
-
+-  Auto-generated DSA question sets by topic and difficulty  
+-  Intelligent question flow system for consistent practice  
+-  JSON-based session logging  
+-  Clean, optimized interface (currently for PC users only)
 
 ---
 
@@ -36,6 +37,56 @@
 | Database & Models | ✅ Completed |
 | Frontend | ✅ Completed |
 | Deployment | ✅ Completed |
+
+---
+
+## 🎥 End-to-End Product Walkthrough
+
+This section demonstrates the complete user journey in DSAFlowBot — from first-time access to roadmap-driven DSA practice.
+
+### 1. Entry Point & Dashboard Routing
+When a user accesses the application, the system automatically routes them based on authentication state:
+- Existing users are redirected to the login page
+- New users are guided to the signup flow
+
+### 2. Login Flow (Existing Users)
+Authenticated users can securely log in to access their personalized dashboard.
+
+<img src="https://github.com/user-attachments/assets/e638cc24-dc0d-4193-99d0-f79bcf300cfe" width="700">
+
+
+### 3. Signup Flow (New Users)
+New users can create an account through a guided signup process.
+
+<img src="https://github.com/user-attachments/assets/dbd4dd7c-c9f4-4451-8654-0ab45d20d1a3" width="700">
+
+During signup, users can choose a profile picture from six preloaded options served from the database.
+
+<img src="https://github.com/user-attachments/assets/bd4ebfaa-c5b7-43a9-84e5-1008be21d378">
+
+
+### 4. Profile Picture Selection
+During signup, users choose from six preloaded profile pictures served from the database.
+
+### 5. Email Verification
+After signup, users receive a verification email to activate their account.
+
+### 6. Password Reset Flow
+Users can recover access to their account using the password reset workflow.
+
+### 7. Roadmap Generation
+The core feature of DSAFlowBot automatically generates a structured, topic-wise DSA roadmap based on user input.
+
+### 8. Topic Selection & Learning Order
+Each roadmap breaks down topics and associated learning videos in a logical progression to support consistent practice.
+
+### 9. Practice Experience
+Users follow the roadmap to practice DSA topics in sequence, maintaining continuity and reducing decision fatigue.
+
+### 10. Roadmap Regeneration
+If a user is not satisfied with the generated roadmap, they can regenerate a new one.  
+Backend safeguards prevent regeneration during active processing.
+
 
 ---
 
