@@ -52,27 +52,27 @@ When a user accesses the application, the system automatically routes them based
 ### 2. Login Flow (Existing Users)
 Authenticated users can securely log in to access their personalized dashboard.
 
-<img src="https://github.com/user-attachments/assets/e638cc24-dc0d-4193-99d0-f79bcf300cfe" width="700">
+<img src="https://github.com/user-attachments/assets/e638cc24-dc0d-4193-99d0-f79bcf300cfe" width="700" />
 
 
 ### 3. Signup Flow (New Users)
 New users can create an account through a guided signup process.
 
-<img src="https://github.com/user-attachments/assets/dbd4dd7c-c9f4-4451-8654-0ab45d20d1a3" width="700">
+<img src="https://github.com/user-attachments/assets/dbd4dd7c-c9f4-4451-8654-0ab45d20d1a3" width="700" />
 
 During signup, users can choose a profile picture from six preloaded options served from the database.
 
-<img src="https://github.com/user-attachments/assets/bd4ebfaa-c5b7-43a9-84e5-1008be21d378">
+<img src="https://github.com/user-attachments/assets/bd4ebfaa-c5b7-43a9-84e5-1008be21d378" />
 
+After signup, users receive an email verification link to activate their account before accessing the dashboard.
 
-### 4. Profile Picture Selection
-During signup, users choose from six preloaded profile pictures served from the database.
-
-### 5. Email Verification
-After signup, users receive a verification email to activate their account.
+<img width="500" height="250" alt="image" src="https://github.com/user-attachments/assets/1f2ac029-4e59-4cb1-8a70-b137eaff3ab1" />
 
 ### 6. Password Reset Flow
 Users can recover access to their account using the password reset workflow.
+
+<img src="https://github.com/user-attachments/assets/fba57409-9c81-41a5-87f8-7cc566182321" width="700"/>
+
 
 ### 7. Roadmap Generation
 The core feature of DSAFlowBot automatically generates a structured, topic-wise DSA roadmap based on user input.
@@ -86,6 +86,8 @@ Users follow the roadmap to practice DSA topics in sequence, maintaining continu
 ### 10. Roadmap Regeneration
 If a user is not satisfied with the generated roadmap, they can regenerate a new one.  
 Backend safeguards prevent regeneration during active processing.
+
+
 
 
 ---
