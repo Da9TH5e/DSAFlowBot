@@ -73,20 +73,24 @@ Users can recover access to their account using the password reset workflow.
 
 <img src="https://github.com/user-attachments/assets/fba57409-9c81-41a5-87f8-7cc566182321" width="700"/>
 
-
 ### 7. Roadmap Generation
 The core feature of DSAFlowBot automatically generates a structured, topic-wise DSA roadmap based on user input.
 
 ### 8. Topic Selection & Learning Order
 Each roadmap breaks down topics and associated learning videos in a logical progression to support consistent practice.
 
+<img src="https://github.com/user-attachments/assets/8e70227b-4780-4f13-b7a6-16e1e8072d4d" width="700" />
+
+
 ### 9. Practice Experience
 Users follow the roadmap to practice DSA topics in sequence, maintaining continuity and reducing decision fatigue.
+
 
 ### 10. Roadmap Regeneration
 If a user is not satisfied with the generated roadmap, they can regenerate a new one.  
 Backend safeguards prevent regeneration during active processing.
 
+<img src="https://github.com/user-attachments/assets/c60a499c-d6de-4ba6-a3b8-1d821dbe4e36" width="700"/>
 
 
 
