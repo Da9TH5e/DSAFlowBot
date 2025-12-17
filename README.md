@@ -92,14 +92,10 @@ Backend safeguards prevent regeneration during active processing.
 
 <img src="https://github.com/user-attachments/assets/c60a499c-d6de-4ba6-a3b8-1d821dbe4e36" width="700"/>
 
-
-
 ---
 
 ## 🧑‍💻 Author
 Developed by **Debarka Mandal** — blending AI, backend engineering, and DSA automation into one learning platform.
-
----
 
 ---
 
