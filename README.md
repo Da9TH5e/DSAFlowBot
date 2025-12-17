@@ -7,7 +7,7 @@
 
 
 ### 🌐 Accessing the Live Application
-Demonstrates direct access to the deployed application using the custom domain.
+You can acess the website by searching or clicking the above link
 
 <img src="https://github.com/user-attachments/assets/e860c484-9b73-4ab4-9160-a5eacc128371" width="800"/>
 
