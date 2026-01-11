@@ -97,6 +97,14 @@ if (!video_id) {
                         // Build question content
                         let contentHtml = `<p><strong>Description:</strong> ${q.description}</p>`;
                         if (isCodingQuestion) {
+                            contentHtml += `
+                                <div class="execution-note">
+                                    ⚠ <strong>Execution Notice:</strong><br>
+                                    Interactive input is not supported.<br>
+                                    Provide all inputs as test cases before running the code.<br>
+                                    Do not use input prompts (e.g. <code>input("Enter value")</code>).
+                                </div>
+                            `;
                             if (q.input_format && q.input_format.trim() !== "" && q.input_format.trim().toLowerCase() !== "none")
                                 contentHtml += `<p><strong>Input Format:</strong><br>${q.input_format}</p>`;
                             if (q.output_format && q.output_format.trim() !== "" && q.output_format.trim().toLowerCase() !== "none")
