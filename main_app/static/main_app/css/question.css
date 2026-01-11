@@ -195,6 +195,24 @@ body {
     color: #ddd;
 }
 
+.execution-note {
+    margin: 12px 0;
+    padding: 10px 12px;
+    background: #1e2a2f;
+    border-left: 4px solid #0097b2;
+    outline: 1px solid #0097b2;
+    color: #cfd8dc;
+    font-size: 13px;
+    border-radius: 4px;
+}
+
+.execution-note code {
+    background: #111;
+    padding: 2px 4px;
+    border-radius: 3px;
+    color: #e0e0e0;
+}
+
 #editor-title {
     font-size: 18px;
     color: #e0e0e0;
