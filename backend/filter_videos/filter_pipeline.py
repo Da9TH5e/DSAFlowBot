@@ -46,7 +46,7 @@ class VideoFilter:
                 logger.error(f"Error processing video {video.get('title')}: {e}")
 
         logger.info("=== STAGE 1: Metadata Filtering ===")
-        with ThreadPoolExecutor(max_workers=3) as executor:
+        with ThreadPoolExecutor(max_workers=1) as executor:
             executor.map(process_video, videos)
 
         logger.info(f"Metadata results: {len(passed_videos)} passed, {len(failed_videos)} failed")
