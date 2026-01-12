@@ -61,6 +61,7 @@ def download_with_cookie(url: str, cookie_file: str | None, output_path: str) ->
 
     ydl_opts = {
         "cookiefile": cookie_file,
+        "postprocessor_args": ["-threads", "1"],
         "ignoreconfig": True,
         "noplugins": "all",
         "quiet": False,
