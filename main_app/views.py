@@ -24,7 +24,8 @@ from backend.code_evaluator.judge0_executor import submit_code
 from django.contrib.auth import authenticate, login
 from backend.filter_videos.fetch_videos_youtube import fetching_videos
 from main_app.models import Language, Question, Roadmap, Topic, Transcript, User, Video, EmailVerification
-from backend.task_queue import task_queue, start_worker_once
+from backend.task_queue import upsert_user_task, start_worker_once
+
 
 resend.api_key = settings.RESEND_API_KEY
 
@@ -134,31 +135,49 @@ def run_fetch(language, topic_name):
 @require_GET
 @login_required
 def get_videos(request):
+    user_id = request.user.id
     language = request.GET.get("language")
     topic_name = request.GET.get("topic")
 
     if not language or not topic_name:
-        return JsonResponse({"error": "Missing parameters"}, status=400)
+        return JsonResponse(
+            {"error": "Missing language or topic"},
+            status=400
+        )
 
-    lang_obj, _ = Language.objects.get_or_create(name=language.lower())
+    language = language.lower()
+
+    lang_obj, _ = Language.objects.get_or_create(name=language)
     topic, _ = Topic.objects.get_or_create(
         language=lang_obj,
         name=topic_name
     )
 
-    # Already done
     if topic.is_fully_processed:
-        return JsonResponse({"status": "ready"})
+        return JsonResponse({
+            "status": "ready",
+            "queue_action": "noop"
+        })
 
-    #  Already running
     if topic.is_processing:
-        return JsonResponse({"status": "processing"})
+        return JsonResponse({
+            "status": "processing",
+            "queue_action": "noop"
+        })
 
-    # Enqueue (FIFO)
-    task_queue.put((language.lower(), topic_name))
+    # USER-AWARE QUEUE UPSERT
+    queue_action = upsert_user_task(
+        user_id=user_id,
+        language=language,
+        topic_name=topic_name
+    )
+
     start_worker_once()
 
-    return JsonResponse({"status": "queued"})
+    return JsonResponse({
+        "status": "queued",
+        "queue_action": queue_action
+    })
 
 @require_GET
 def get_filtered_videos(request):
