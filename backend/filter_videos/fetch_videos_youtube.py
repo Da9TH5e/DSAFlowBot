@@ -37,13 +37,13 @@ async def fetching_videos(language: str, topic_name: str):
     
     logger.info(f"Found {len(new_video_list)} new candidate videos. Applying AI filter...")
 
-    MAX_CANDIDATES = 10
+    MAX_CANDIDATES = 8
     new_video_list = new_video_list[:MAX_CANDIDATES]
     logger.info(f"Limiting filtering to {len(new_video_list)} videos (max {MAX_CANDIDATES})")
 
     vf = VideoFilter()
     filtered_videos = await sync_to_async(vf.filter_videos_batch)(new_video_list, language, topic_name)
-    filtered_videos = filtered_videos[:8]
+    filtered_videos = filtered_videos[:3]
 
     logger.info(f"Final selection: {len(filtered_videos)} videos to process")
 
