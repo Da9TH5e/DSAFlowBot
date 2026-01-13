@@ -54,6 +54,8 @@ class Topic(models.Model):
     is_fully_processed = models.BooleanField(default=False)
     total_videos = models.PositiveIntegerField(default=0)
 
+    is_processing = models.BooleanField(default=False)
+
     class Meta:
         unique_together = ('language', 'name')
 
