@@ -24,6 +24,7 @@ from backend.code_evaluator.judge0_executor import submit_code
 from django.contrib.auth import authenticate, login
 from backend.filter_videos.fetch_videos_youtube import fetching_videos
 from main_app.models import Language, Question, Roadmap, Topic, Transcript, User, Video, EmailVerification
+from backend.task_queue import task_queue, start_worker_once
 
 resend.api_key = settings.RESEND_API_KEY
 
@@ -137,11 +138,27 @@ def get_videos(request):
     topic_name = request.GET.get("topic")
 
     if not language or not topic_name:
-        return JsonResponse({"error": "Missing parameters"})
+        return JsonResponse({"error": "Missing parameters"}, status=400)
 
-    run_fetch(language, topic_name)
+    lang_obj, _ = Language.objects.get_or_create(name=language.lower())
+    topic, _ = Topic.objects.get_or_create(
+        language=lang_obj,
+        name=topic_name
+    )
 
-    return JsonResponse({"status": "processing"})
+    # Already done
+    if topic.is_fully_processed:
+        return JsonResponse({"status": "ready"})
+
+    #  Already running
+    if topic.is_processing:
+        return JsonResponse({"status": "processing"})
+
+    # Enqueue (FIFO)
+    task_queue.put((language.lower(), topic_name))
+    start_worker_once()
+
+    return JsonResponse({"status": "queued"})
 
 @require_GET
 def get_filtered_videos(request):
