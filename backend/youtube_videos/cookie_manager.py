@@ -102,7 +102,6 @@ def download_with_cookie(url: str, cookie_file: str | None, output_path: str) ->
     # ---------- Attempt 2: muxed fallback ----------
     try:
         ydl_opts = dict(base_opts)
-        ydl_opts["format"] = "best"
 
         logger.info("Falling back to muxed download...")
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
