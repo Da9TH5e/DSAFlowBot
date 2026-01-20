@@ -101,6 +101,10 @@ def rotate_cookies_and_download(url: str, output_path: str, cookie_dir: str) -> 
     Rotate cookies until download succeeds.
     Fallback: try without cookie.
     """
+    if download_with_cookie(url, None, output_path):
+        logger.info("Success WITHOUT cookie.")
+        return True
+    
     cookies = list_cookie_files(cookie_dir)
     random.shuffle(cookies)
 
