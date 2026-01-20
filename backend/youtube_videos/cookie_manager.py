@@ -67,18 +67,12 @@ def download_with_cookie(url: str, cookie_file: str | None, output_path: str) ->
         "quiet": False,
         "no_warnings": False,
         "progress_hooks": [progress_hook],
-
-        # 🔥 Force audio-only download (no video)
         "format": "bestaudio/best",
-
-        # 🔥 Force direct MP3 conversion
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
             "preferredquality": "192",
         }],
-
-        # 🔥 Output path (yt-dlp will add .mp3)
         "outtmpl": output_template + ".%(ext)s",
     }
 
@@ -97,31 +91,20 @@ def download_with_cookie(url: str, cookie_file: str | None, output_path: str) ->
 
 
 def rotate_cookies_and_download(url: str, output_path: str, cookie_dir: str) -> bool:
-    """
-    Rotate cookies until download succeeds.
-    Fallback: try without cookie.
-    """
     if download_with_cookie(url, None, output_path):
         logger.info("Success WITHOUT cookie.")
         return True
-    
+
     cookies = list_cookie_files(cookie_dir)
     random.shuffle(cookies)
 
     logger.info(f"Found {len(cookies)} cookies for rotation.")
 
-    # Try each cookie
     for cookie_file in cookies:
         if download_with_cookie(url, cookie_file, output_path):
             logger.info(f"SUCCESS with cookie: {cookie_file}")
             return True
 
-    logger.warning("All cookies failed, trying WITHOUT cookie...")
-
-    # Try without cookie
-    if download_with_cookie(url, None, output_path):
-        logger.info("Success WITHOUT cookie.")
-        return True
-
     logger.error("Download failed with ALL methods.")
     return False
+
