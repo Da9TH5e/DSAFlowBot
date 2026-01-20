@@ -54,7 +54,7 @@ def download_with_cookie(url: str, cookie_file: str | None, output_path: str) ->
         "postprocessor_args": ["-threads", "1"],
         "outtmpl": output_template + ".%(ext)s",
 
-        # ✅ Android client (most reliable on VPS)
+        # Android client (most reliable on VPS)
         "extractor_args": {
             "youtube": {
                 "player_client": ["android"],
@@ -73,7 +73,6 @@ def download_with_cookie(url: str, cookie_file: str | None, output_path: str) ->
     try:
         logger.info("Trying audio-only download...")
         ydl_opts = dict(base_opts)
-        ydl_opts["format"] = "bestaudio/best"
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
