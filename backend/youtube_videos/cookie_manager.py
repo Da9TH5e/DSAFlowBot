@@ -71,6 +71,12 @@ def download_with_cookie(url: str, cookie_file: str | None, output_path: str) ->
         "progress_hooks": [progress_hook],
         "postprocessor_args": ["-threads", "1"],
         "outtmpl": output_template + ".%(ext)s",
+        
+        "extractor_args": {
+            "youtube": {
+                "player_client": ["android"]
+            }
+        },
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
