@@ -53,15 +53,24 @@ def download_with_cookie(url: str, cookie_file: str | None, output_path: str) ->
         "progress_hooks": [progress_hook],
         "postprocessor_args": ["-threads", "1"],
         "outtmpl": output_template + ".%(ext)s",
-
-        # Android client (most reliable on VPS)
+    
+        # Android client (VPS-safe)
         "extractor_args": {
             "youtube": {
                 "player_client": ["android"],
-                "player_skip": ["webpage"]
+                "player_skip": ["webpage"],
             }
         },
-        
+    
+        # REQUIRED for VPS
+        "http_headers": {
+            "User-Agent": "com.google.android.youtube/19.09.37 (Linux; U; Android 13)"
+        },
+        "sleep_interval": 3,
+        "max_sleep_interval": 6,
+        "merge_output_format": "mp4",
+    
+        # MP3 extraction (safe)
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
