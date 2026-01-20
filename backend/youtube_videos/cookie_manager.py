@@ -51,42 +51,61 @@ def progress_hook(d):
 
 def download_with_cookie(url: str, cookie_file: str | None, output_path: str) -> bool:
     """
-    Download ONLY audio → MP3, never MP4.
+    Download audio as MP3.
+    Strategy:
+    1) Try audio-only (cheap)
+    2) Fallback to muxed video+audio (reliable)
     """
+
     if os.path.exists(output_path):
         os.remove(output_path)
 
-    # yt-dlp output template (same dir, forced .mp3)
     output_template = output_path.replace(".mp3", "")
 
-    ydl_opts = {
+    base_opts = {
         "cookiefile": cookie_file,
-        "postprocessor_args": ["-threads", "1"],
         "ignoreconfig": True,
         "noplugins": "all",
         "quiet": False,
         "no_warnings": False,
         "progress_hooks": [progress_hook],
-        "format": "bestaudio/best",
+        "postprocessor_args": ["-threads", "1"],
+        "outtmpl": output_template + ".%(ext)s",
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
             "preferredquality": "192",
         }],
-        "outtmpl": output_template + ".%(ext)s",
     }
 
+    # ---------- Attempt 1: audio-only ----------
     try:
+        ydl_opts = dict(base_opts)
+        ydl_opts["format"] = "bestaudio/best"
+
+        logger.info("Trying audio-only download...")
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
 
-        # yt-dlp will produce output_template.mp3
-        final_mp3 = output_template + ".mp3"
-
-        return os.path.exists(final_mp3)
+        if os.path.exists(output_template + ".mp3"):
+            return True
 
     except Exception as e:
-        logger.warning(f"Cookie failed ({cookie_file}): {e}")
+        logger.warning(f"Audio-only failed ({cookie_file}): {e}")
+
+    # ---------- Attempt 2: muxed fallback ----------
+    try:
+        ydl_opts = dict(base_opts)
+        ydl_opts["format"] = "best"
+
+        logger.info("Falling back to muxed download...")
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+
+        return os.path.exists(output_template + ".mp3")
+
+    except Exception as e:
+        logger.warning(f"Muxed fallback failed ({cookie_file}): {e}")
         return False
 
 
