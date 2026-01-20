@@ -57,10 +57,11 @@ def download_with_cookie(url: str, cookie_file: str | None, output_path: str) ->
         # ✅ Android client (most reliable on VPS)
         "extractor_args": {
             "youtube": {
-                "player_client": ["android"]
+                "player_client": ["android"],
+                "player_skip": ["webpage"]
             }
         },
-
+        
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
