@@ -2,7 +2,7 @@
 
 **DSAFlowBot** is an intelligent assistant designed to streamline your Data Structures and Algorithms (DSA) practice. It generates topic-wise question flows, manages practice sessions, and helps you build a consistent routine with minimal friction.
 
-👉 https://dsaflowbot.bar
+👉 https://dsaflowbot.bar (server is under maintaince and might not work as intended it will be working by tommorrow)
 > ⚠️ Note: Due to limited server resources, performance may occasionally be slower.
 
 
