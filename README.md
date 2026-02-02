@@ -1,104 +1,106 @@
-# 🧠 DSAFlowBot
+<img width="985" height="111" alt="DSAFlowBot" src="https://github.com/user-attachments/assets/1b11f7f5-f585-4f19-a00e-20aec99160e1" />
 
-**DSAFlowBot** is an intelligent assistant designed to streamline your Data Structures and Algorithms (DSA) practice. It generates topic-wise question flows, manages practice sessions, and helps you build a consistent routine with minimal friction.
+DSAFlowBot is an intelligent DSA practice assistant that generates structured, topic-wise question flows to reduce decision fatigue and help users practice Data Structures & Algorithms consistently.
+The system focuses on guided progression rather than random problem solving.
 
-👉 https://dsaflowbot.bar 
-> ⚠️ Note: Due to limited server resources, performance may occasionally be slower.
-
-
-### 🌐 Accessing the Live Application
-You can acess the website by searching or clicking the above link
-
-<img src="https://github.com/user-attachments/assets/e860c484-9b73-4ab4-9160-a5eacc128371" width="800"/>
-
----
-
-## 🚀 Features
--  Auto-generated DSA question sets by topic and difficulty  
--  Intelligent question flow system for consistent practice  
--  JSON-based session logging  
--  Clean, optimized interface (currently for PC users only)
-
----
-
-## 🧰 Tech Stack
-- **Backend:** Django
-- **Frontend:** HTML + CSS + Javascript  
-- **Database:** SQLite  
-- **AI Layer:** Python scripts for flow generation and question management  
-- **Deployment:** Hosted on Hostinger server along with a custom domain  
-
----
-
-## ⚙️ Current Status
-| Component | Progress |
-|------------|-----------|
-| Backend | ✅ Completed |
-| Database & Models | ✅ Completed |
-| Frontend | ✅ Completed |
-| Deployment | ✅ Completed |
-
----
-
-## 🎥 End-to-End Product Walkthrough
-
-This section demonstrates the complete user journey in DSAFlowBot — from first-time access to roadmap-driven DSA practice.
-
-### 1. Entry Point & Dashboard Routing
-When a user accesses the application, the system automatically routes them based on authentication state:
-- Existing users are redirected to the login page
-- New users are guided to the signup flow
-
-### 2. Login Flow (Existing Users)
-Authenticated users can securely log in to access their personalized dashboard.
-
-<img src="https://github.com/user-attachments/assets/e638cc24-dc0d-4193-99d0-f79bcf300cfe" width="700" />
+Here you can acess the live link: https://dsaflowbot.bar/ 
 
 
-### 3. Signup Flow (New Users)
-New users can create an account through a guided signup process.
+## 🧰 Technologies Used
+- `Django`
+- `Python`
+- `HTML`, `CSS`, `Javascript`
+- `LLM`
+- `LangChain`
+- `API Integration`
+- `SQLite` 
 
-<img src="https://github.com/user-attachments/assets/dbd4dd7c-c9f4-4451-8654-0ab45d20d1a3" width="700" />
+## ✨ Features
 
-During signup, users can choose a profile picture from six preloaded options served from the database.
+- DSAFlowBot automatically generates a structured, topic-wise roadmap for Data Structures and Algorithms based on the user’s selected preferences and experience level.
+  This ensures a logical learning progression instead of random problem solving.  
+- Topics are unlocked in sequence, enforcing focused learning and preventing context switching.
+  This reduces decision fatigue and helps users build consistency in their practice routine.
+- Users can regenerate their roadmap if they are unsatisfied with the current one.
+  Backend safeguards ensure:
+    - No regeneration during active processing
+    - No accidental overwrites of in-progress sessions
+    - Controlled execution to avoid duplicate tasks  
+- User activity and roadmap states are tracked using JSON-based logging, enabling:
+    - Session continuity across logins
+    - Debug-friendly backend monitoring
+    - Reliable recovery from partial or interrupted flows
+- The platform includes a complete authentication workflow:
+    - User signup with email verification
+    - Secure login handling
+    - Password reset via email to ensures account integrity while keeping onboarding friction low. 
+  The interface is intentionally minimal and optimized for desktop DSA practice, focusing on clarity, readability, and reduced distractions.
+- DSAFlowBot is designed with a backend-first architecture where all critical logic — including roadmap generation, topic sequencing, regeneration safeguards, and session continuity — is handled server-side. This ensures deterministic behavior, prevents inconsistent states caused by frontend actions, and makes the system easier to debug, extend, and maintain, with the frontend acting primarily as a presentation layer.
 
-<img src="https://github.com/user-attachments/assets/bd4ebfaa-c5b7-43a9-84e5-1008be21d378" />
+## 🚀 Process
 
-After signup, users receive an email verification link to activate their account before accessing the dashboard.
+1. ***User Entry & Topic Selection:***
+  When a user enters the DSAFlowBot dashboard, they begin by selecting a **DSA topic** and a **preferred programming language**. These inputs define the learning context for the entire pipeline. Once confirmed, the topic–language pair is sent from the frontend to the backend as a structured request, initiating the content generation flow.
 
-<img width="500" height="250" alt="image" src="https://github.com/user-attachments/assets/1f2ac029-4e59-4cb1-8a70-b137eaff3ab1" />
+2. ***AI-Driven Definition & Roadmap Generation:***
+  The backend forwards the selected topic and language to the AI layer using a controlled prompt. The AI model generates:
+    - A concise topic definition
+    - A structured, topic-wise roadmap for learning and practice
+   
+   The generated definition and roadmap are validated and then **persisted in the database**, ensuring consistency across sessions. Once stored, this data is sent back to the frontend for display on the user dashboard.
 
-### 6. Password Reset Flow
-Users can recover access to their account using the password reset workflow.
+3. ***YouTube Video Discovery:***
+  In parallel, the backend uses the topic and language to query YouTube for relevant learning videos. This results in a **candidate pool of videos**, which acts as the raw input set for further validation and processing.
 
-<img src="https://github.com/user-attachments/assets/fba57409-9c81-41a5-87f8-7cc566182321" width="700"/>
+4. ***Database Deduplication Check:***
+  Each video in the candidate pool is first checked against the database:
+    - If the video already exists **and its questions are already generated**, it is ignored to prevent duplication.
+    - If the video does not exist in the database, it proceeds to the filtering pipeline.
 
-### 7. Roadmap Generation
-The core feature of DSAFlowBot automatically generates a structured, topic-wise DSA roadmap based on user input.
+   This step ensures efficient reuse of previously processed content.
 
-### 8. Topic Selection & Learning Order
-Each roadmap breaks down topics and associated learning videos in a logical progression to support consistent practice.
+5. ***Stage 1 Filtering: Metadata Validation:***
+  In the first filtering stage, the system analyzes the video’s metadata:
+    - Title
+    - Description
+    - Tags
 
-<img src="https://github.com/user-attachments/assets/8e70227b-4780-4f13-b7a6-16e1e8072d4d" width="700" />
+   The topic and language are matched against this metadata to determine relevance. Videos that fail this check are **not immediately discarded** but are forwarded to a deeper validation stage.
+
+6. ***Stage 2 Filtering: Transcript-Based Relevance Check:***
+  For videos that fail metadata validation, the backend extracts a **short portion of the video transcript** (not the full transcript). This partial transcript is sent to the AI model, which evaluates whether the content is conceptually relevant to the selected topic and language.
+    - If deemed irrelevant, the video is rejected.
+    - If relevant, the video is approved for processing.
+
+7. ***Keyword Expansion & Fallback Search:***
+  If no suitable videos pass the initial filters, the AI generates **alternative keywords and synonymous terms** related to the topic. These keywords are then used to perform additional YouTube searches, increasing the likelihood of discovering high-quality, relevant content.
+
+8. ***Video Processing & Storage:***
+  Once a video passes all relevance checks:
+    - The video metadata is stored in the database.
+    - The system attempts to fetch the full transcript directly from YouTube.
+  If a transcript is unavailable:
+    - The video’s audio is downloaded.
+    - The audio is passed through **Whisper** for speech-to-text transcription.
+    - The generated transcript is then stored in the database.
+
+9. ***Question Generation Pipeline:***
+  The final transcript is sent to the AI model using a custom prompt designed for DSA comprehension. The model generates **topic-aligned questions** based strictly on the transcript content. These questions are validated and stored in the database, linked to the corresponding video and topic.
+
+10. ***Serving Content to the User:***
+  When the user begins practice:
+    - Questions are fetched directly from the database
+    - No real-time generation occurs during practice
+    - The system serves pre-validated, pre-generated content for consistent performance and reliability
+
+  This completes the end-to-end pipeline from topic selection to question delivery.
+
+## 🎞️ Video
+https://github.com/user-attachments/assets/ad7cdbaf-b42d-4eba-a281-d9f26eb81372
 
 
-### 9. Practice Experience
-Users follow the roadmap to practice DSA topics in sequence, maintaining continuity and reducing decision fatigue.
 
 
-### 10. Roadmap Regeneration
-If a user is not satisfied with the generated roadmap, they can regenerate a new one.  
-Backend safeguards prevent regeneration during active processing.
+## Walkthrough
 
-<img src="https://github.com/user-attachments/assets/c60a499c-d6de-4ba6-a3b8-1d821dbe4e36" width="700"/>
 
----
-
-## 🧑‍💻 Author
-Developed by **Debarka Mandal** — blending AI, backend engineering, and DSA automation into one learning platform.
-
----
-
-### ⭐ Support
-If you like the project, consider **starring ⭐ the repo** to show support and stay updated!
-Also if you want can suggest to add **features**
