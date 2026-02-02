@@ -153,12 +153,6 @@ def get_videos(request):
         name=topic_name
     )
 
-    if topic.is_fully_processed:
-        return JsonResponse({
-            "status": "ready",
-            "queue_action": "noop"
-        })
-
     if topic.is_processing:
         return JsonResponse({
             "status": "processing",
