@@ -97,10 +97,3 @@ Here you can acess the live link: https://dsaflowbot.bar/
 
 ## 🎞️ Video
 https://github.com/user-attachments/assets/ad7cdbaf-b42d-4eba-a281-d9f26eb81372
-
-
-
-
-## Walkthrough
-
-
