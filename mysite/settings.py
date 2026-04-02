@@ -24,9 +24,11 @@ EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = False
 
-# Hosts allowed to access your Django app
+# Hosts allowed to access your Django app and during local development remove everything after '=' in
+# ALLOWED_HOSTS add just put ["*"].
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
+# Remove these seven lines below during development
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
