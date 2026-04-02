@@ -19,7 +19,14 @@ Here you can access the live link: https://dsaflowbot.bar/
 - **AI**: LLM (Groq), LangChain
 - **Other**: YouTube API, Whisper, SQLite, HTML/CSS/JS
 
+## 🚀 Features
+- Users select a topic and language, triggering the backend to generate and persist a custom definition and structured roadmap via AI.
+- The system fetches YouTube videos, deduplicates them against the database, and performs two-stage filtering (metadata and AI-based transcript analysis) to ensure relevance.
+- If initial searches fail, the AI generates synonymous keywords to re-query YouTube and ensure high-quality content discovery.
+- For approved videos, the system retrieves transcripts directly or uses Whisper AI for speech-to-text, storing all data for session continuity.
+- The backend generates topic-aligned practice questions from the transcripts, serving this pre-validated content to the user for a low-latency, distraction-free experience.
 
+For more detailed view of the process : [Detailed Process](ARCHITECTURE.md)
 
 ## 🎞️ Video
 https://github.com/user-attachments/assets/2cf3ff0a-0fef-438d-915c-6b4a2bd008ff
