@@ -31,3 +31,13 @@ For more detailed view of the process : [Detailed Process](ARCHITECTURE.md)
 ## 🎞️ Video
 https://github.com/user-attachments/assets/2cf3ff0a-0fef-438d-915c-6b4a2bd008ff
 
+## 🖥️ Quick Start (Local Setup)
+```bash
+git clone https://github.com/Da9TH5e/DSAFlowBot.git
+cd DSAFlowBot
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
+
+In `settings.py` make ALLOWED_HOSTS = "*"
