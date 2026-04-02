@@ -21,9 +21,6 @@ load_dotenv(BASE_DIR / ".env")
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = False
 
