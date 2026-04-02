@@ -5,37 +5,19 @@ The system focuses on guided progression rather than random problem solving.
 
 Here you can access the live link: https://dsaflowbot.bar/ 
 
+## ✨ Features
+- Auto-generates topic-wise paths based on experience to ensure logical progression.
+- Topics unlock in order to prevent context switching and decision fatigue.
+- Allows roadmap resets with backend safeguards against duplicate or interrupted tasks.
+- JSON logging tracks progress for seamless recovery and reliable monitoring.
+- Full signup, email verification, and password reset workflow.
+- Distraction-free, desktop-optimized interface focused on practice clarity.
+- Server-side logic ensures deterministic behavior, data integrity, and easier maintenance
 
 ## 🧰 Technologies Used
-- `Django`
-- `Python`
-- `HTML`, `CSS`, `Javascript`
-- `LLM`
-- `LangChain`
-- `API Integration`
-- `SQLite` 
-
-## ✨ Features
-
-- DSAFlowBot automatically generates a structured, topic-wise roadmap for Data Structures and Algorithms based on the user’s selected preferences and experience level.
-  This ensures a logical learning progression instead of random problem solving.  
-- Topics are unlocked in sequence, enforcing focused learning and preventing context switching.
-  This reduces decision fatigue and helps users build consistency in their practice routine.
-- Users can regenerate their roadmap if they are unsatisfied with the current one.
-  Backend safeguards ensure:
-    - No regeneration during active processing
-    - No accidental overwrites of in-progress sessions
-    - Controlled execution to avoid duplicate tasks  
-- User activity and roadmap states are tracked using JSON-based logging, enabling:
-    - Session continuity across logins
-    - Debug-friendly backend monitoring
-    - Reliable recovery from partial or interrupted flows
-- The platform includes a complete authentication workflow:
-    - User signup with email verification
-    - Secure login handling
-    - Password reset via email to ensures account integrity while keeping onboarding friction low. 
-  The interface is intentionally minimal and optimized for desktop DSA practice, focusing on clarity, readability, and reduced distractions.
-- DSAFlowBot is designed with a backend-first architecture where all critical logic — including roadmap generation, topic sequencing, regeneration safeguards, and session continuity — is handled server-side. This ensures deterministic behavior, prevents inconsistent states caused by frontend actions, and makes the system easier to debug, extend, and maintain, with the frontend acting primarily as a presentation layer.
+- **Backend**: Django + Python
+- **AI**: LLM (Groq), LangChain
+- **Other**: YouTube API, Whisper, SQLite, HTML/CSS/JS
 
 ## 🚀 Process
 
