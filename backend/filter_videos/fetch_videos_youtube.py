@@ -1,4 +1,5 @@
 # fetch_videos_youtube.py
+
 import sys
 import os
 from asgiref.sync import sync_to_async
@@ -6,15 +7,16 @@ from asgiref.sync import sync_to_async
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from filter_videos.filter_pipeline import VideoFilter
-from youtube_videos.youtube_fetcher import fetch_videos, process_video
-from main_app.models import Topic, Video, Transcript, Question
+from youtube_videos.youtube_fetcher import process_video
+from youtube_videos.youtube_api import search_youtube_videos
+from main_app.models import Topic, Video, Question
 from youtube_videos.utils import extract_video_id
 
 import logging
 logger = logging.getLogger(__name__)
 
 async def fetching_videos(language: str, topic_name: str):
-    videos = await sync_to_async(fetch_videos)(f"{language} {topic_name}", max_results=5)
+    videos = await sync_to_async(search_youtube_videos)(f"{language} {topic_name}",)
     if not videos:
         logger.error("No videos fetched.")
         return
@@ -37,13 +39,13 @@ async def fetching_videos(language: str, topic_name: str):
     
     logger.info(f"Found {len(new_video_list)} new candidate videos. Applying AI filter...")
 
-    MAX_CANDIDATES = 8
+    MAX_CANDIDATES = 10
     new_video_list = new_video_list[:MAX_CANDIDATES]
     logger.info(f"Limiting filtering to {len(new_video_list)} videos (max {MAX_CANDIDATES})")
 
     vf = VideoFilter()
     filtered_videos = await sync_to_async(vf.filter_videos_batch)(new_video_list, language, topic_name)
-    filtered_videos = filtered_videos[:3]
+    filtered_videos = filtered_videos[:10]
 
     logger.info(f"Final selection: {len(filtered_videos)} videos to process")
 
@@ -76,15 +78,11 @@ async def found_video(video_ID: str) -> bool:
         if not video_exists:
             return False
         
-        transcript_exists = await sync_to_async(
-            Transcript.objects.filter(video__video_id=video_ID).exists
-        )()
-        
         question_exists = await sync_to_async(
             Question.objects.filter(video__video_id=video_ID).exists
         )()
 
-        return video_exists and transcript_exists and question_exists
+        return video_exists and question_exists
         
     except Exception as e:
         logger.error(f"Error checking video existence {video_ID}: {str(e)}")

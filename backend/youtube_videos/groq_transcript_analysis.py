@@ -5,85 +5,67 @@ from groq import Groq
 import logging
 logger = logging.getLogger(__name__)
 
-def analyze_with_groq(transcript: str, language: str, topic: str, title: str, description: str, tags: list) -> bool:
+def analyze_with_groq(
+    transcript: str,  
+    language: str,
+    topic: str,
+    title: str,
+    description: str,
+    tags: list
+) -> bool:
     """
-    Analyze video content using Groq API with two-step verification:
-    1. Check transcript for explicit mention of both language and topic.
-    2. If not found, check metadata (title, description, tags).
-    Returns True if either check confirms relevance.
+    FlowOne semantic relevance check (metadata-only).
+
+    NOTE:
+    - Transcript is intentionally ignored
+    - Decision is based ONLY on title, description, and tags
     """
+
     try:
         api_key = os.getenv("GROQ_API_KEY")
         if not api_key:
-            logger.error("Groq API key not found in environment variables.")
+            logger.error("Groq API key not found.")
             return False
 
         client = Groq(api_key=api_key)
 
-        transcript_prompt = f"""
-        Analyze this programming video transcript and determine if it explicitly discusses BOTH:
-        1. Programming Language: {language}
-        2. Topic: {topic}
+        prompt = f"""
+        You are evaluating a YouTube video's METADATA.
 
-        Requirements:
-        - Both must be explicitly mentioned or clearly discussed
-        - Look for actual content, not just passing references
-        - Focus on tutorial/educational content about these topics
-
-        Transcript: 
-        {transcript[:6000]}
-
-        Respond with exactly "true" if both are properly covered, otherwise "false".
-        """
-
-        transcript_response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
-            messages=[{"role": "user", "content": transcript_prompt}],
-            temperature=0,
-            max_tokens=10,
-        )
-
-        transcript_result = transcript_response.choices[0].message.content.strip().lower()
-
-        if "true" in transcript_result:
-            logger.info(f"Groq: Transcript confirms {language} + {topic} → {title}")
-            return True
-
-        logger.info(f"Groq: Transcript doesn't confirm {language} + {topic} → {title}")
-
-        metadata_prompt = f"""
-        Analyze this video metadata and determine if the video is relevant to:
-        - Programming in {language}
-        - Topic: {topic}
-
-        Consider:
-        - Direct matches for "{topic}" in {language}
-        - Related concepts and subtopics
-        - Practical examples and tutorials
-        - Overall programming context
+        Task:
+        Decide whether this video is an EDUCATIONAL programming tutorial
+        that teaches the topic "{topic}" in the programming language "{language}".
 
         Video Metadata:
         Title: {title}
-        Description: {description[:800]}
-        Tags: {', '.join(tags[:15]) if tags else 'None'}
+        Description: {description}
+        Tags: {', '.join(tags)}
 
-        Respond with exactly "true" if relevant, otherwise "false".
+        Rules:
+        - Return YES only if instructional intent is clear
+        - Do NOT assume content not implied by metadata
+        - Ignore clickbait, hype, or vague mentions
+        - Reject if the topic is only mentioned in passing
+        - Do NOT hallucinate
+
+        Respond with ONLY one word:
+        YES or NO
         """
 
-        metadata_response = client.chat.completions.create(
+        response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
-            messages=[{"role": "user", "content": metadata_prompt}],
+            messages=[{"role": "user", "content": prompt}],
             temperature=0,
-            max_tokens=10,
+            max_tokens=3,
         )
 
-        metadata_result = metadata_response.choices[0].message.content.strip().lower()
+        result = response.choices[0].message.content.strip().upper()
 
-        if "true" in metadata_result:
-            logger.info(f"Groq: Metadata confirms {language} + {topic} → {title}")
+        if "YES" in result:
+            logger.info(f"Groq confirms relevance → {title}")
             return True
 
-        logger.info(f"Groq: Metadata doesn't confirm {language} + {topic} → {title}")
+        logger.info(f"Groq rejects relevance → {title}")
         return False
 
     except Exception as e:

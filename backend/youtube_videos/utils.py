@@ -1,9 +1,10 @@
 # backend/youtube_videos/utils.py
 from urllib.parse import urlparse, parse_qs
+from typing import Optional
 
 LATEST_VIDEO_ID = None
 
-def extract_video_id(youtube_url):
+def extract_video_id(youtube_url: str) -> Optional[str]:
     """Extracts YouTube video ID from various URL formats."""
     global LATEST_VIDEO_ID
     video_id = None
@@ -31,4 +32,3 @@ def extract_video_id(youtube_url):
 def get_latest_video_id() -> str:
     """Returns the most recently extracted video ID."""
     return LATEST_VIDEO_ID
-
