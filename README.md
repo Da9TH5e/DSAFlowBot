@@ -1,104 +1,120 @@
 # 🧠 DSAFlowBot
 
-**DSAFlowBot** is an intelligent assistant designed to streamline your Data Structures and Algorithms (DSA) practice. It generates topic-wise question flows, manages practice sessions, and helps you build a consistent routine with minimal friction.
+## 📝 Intro
+**DSAFlowBot** is an intelligent assistant that helps you master Data Structures and Algorithms through auto-generated, topic-wise practice flows. It streamlines your DSA learning journey by providing a structured roadmap and consistent practice sessions with minimal friction.
 
-👉 https://dsaflowbot.bar 
-> ⚠️ Note: Due to limited server resources, performance may occasionally be slower.
-
-
-### 🌐 Accessing the Live Application
-You can acess the website by searching or clicking the above link
-
-<img src="https://github.com/user-attachments/assets/e860c484-9b73-4ab4-9160-a5eacc128371" width="800"/>
-
----
-
-## 🚀 Features
--  Auto-generated DSA question sets by topic and difficulty  
--  Intelligent question flow system for consistent practice  
--  JSON-based session logging  
--  Clean, optimized interface (currently for PC users only)
+👉 **Live:** https://dsaflowbot.bar
 
 ---
 
 ## 🧰 Tech Stack
 - **Backend:** Django
-- **Frontend:** HTML + CSS + Javascript  
-- **Database:** SQLite  
-- **AI Layer:** Python scripts for flow generation and question management  
-- **Deployment:** Hosted on Hostinger server along with a custom domain  
+- **Frontend:** HTML + CSS + JavaScript
+- **Database:** SQLite
+- **AI Layer:** Python scripts for roadmap and flow generation
+- **Deployment:** Hostinger (custom domain)
 
 ---
 
-## ⚙️ Current Status
-| Component | Progress |
-|------------|-----------|
-| Backend | ✅ Completed |
-| Database & Models | ✅ Completed |
-| Frontend | ✅ Completed |
-| Deployment | ✅ Completed |
+## 🚀 Features (What Users Can Do)
+- ✍️ **Sign up & authenticate** with email verification
+- 🎨 **Choose profile pictures** from preloaded avatar options
+- 🗺️ **Generate personalized DSA roadmaps** with AI-driven topic sequencing
+- 📖 **Browse curated topics** with learning resources and difficulty levels
+- 📝 **Practice structured flows** following the generated roadmap
+- 🔄 **Regenerate roadmaps** if not satisfied with the initial plan
+- 🔒 **Manage account** with password reset functionality
 
 ---
 
-## 🎥 End-to-End Product Walkthrough
+## ⚙️ Process (How It Works)
 
-This section demonstrates the complete user journey in DSAFlowBot — from first-time access to roadmap-driven DSA practice.
+DSAFlowBot works through a **multi-phase pipeline** that transforms user input into a complete learning experience:
 
-### 1. Entry Point & Dashboard Routing
-When a user accesses the application, the system automatically routes them based on authentication state:
-- Existing users are redirected to the login page
-- New users are guided to the signup flow
+### System Architecture Diagram
 
-### 2. Login Flow (Existing Users)
-Authenticated users can securely log in to access their personalized dashboard.
-
-<img src="https://github.com/user-attachments/assets/e638cc24-dc0d-4193-99d0-f79bcf300cfe" width="700" />
-
-
-### 3. Signup Flow (New Users)
-New users can create an account through a guided signup process.
-
-<img src="https://github.com/user-attachments/assets/dbd4dd7c-c9f4-4451-8654-0ab45d20d1a3" width="700" />
-
-During signup, users can choose a profile picture from six preloaded options served from the database.
-
-<img src="https://github.com/user-attachments/assets/bd4ebfaa-c5b7-43a9-84e5-1008be21d378" />
-
-After signup, users receive an email verification link to activate their account before accessing the dashboard.
-
-<img width="500" height="250" alt="image" src="https://github.com/user-attachments/assets/1f2ac029-4e59-4cb1-8a70-b137eaff3ab1" />
-
-### 6. Password Reset Flow
-Users can recover access to their account using the password reset workflow.
-
-<img src="https://github.com/user-attachments/assets/fba57409-9c81-41a5-87f8-7cc566182321" width="700"/>
-
-### 7. Roadmap Generation
-The core feature of DSAFlowBot automatically generates a structured, topic-wise DSA roadmap based on user input.
-
-### 8. Topic Selection & Learning Order
-Each roadmap breaks down topics and associated learning videos in a logical progression to support consistent practice.
-
-<img src="https://github.com/user-attachments/assets/8e70227b-4780-4f13-b7a6-16e1e8072d4d" width="700" />
-
-
-### 9. Practice Experience
-Users follow the roadmap to practice DSA topics in sequence, maintaining continuity and reducing decision fatigue.
-
-
-### 10. Roadmap Regeneration
-If a user is not satisfied with the generated roadmap, they can regenerate a new one.  
-Backend safeguards prevent regeneration during active processing.
-
-<img src="https://github.com/user-attachments/assets/c60a499c-d6de-4ba6-a3b8-1d821dbe4e36" width="700"/>
+```
+PHASE 1: USER INPUT & AUTHENTICATION
+┌──────────────────────────────────┐
+│  User Login                      │
+│  Select Language & Topic         │
+└────────────┬─────────────────────┘
+             │
+             ▼
+PHASE 2: ROADMAP & DEFINITION GENERATION
+┌──────────────────────────────────────────┐
+│  Send to AI Model API                    │
+│  ├─ Generate Roadmap                     │
+│  └─ Generate Definition (in selected     │
+│     language & topic)                    │
+└────────────┬─────────────────────────────┘
+             │
+             ▼
+PHASE 3: YOUTUBE VIDEO DISCOVERY & FILTERING
+┌──────────────────────────────────────────┐
+│  Search YouTube for Topic Videos         │
+│  Fetch Available Videos                  │
+│  Filter Against Quality Rules            │
+│  ├─ Video duration                       │
+│  ├─ Channel credibility                  │
+│  ├─ View count & ratings                 │
+│  └─ Relevance score                      │
+└────────────┬─────────────────────────────┘
+             │
+             ▼
+PHASE 4: TRANSCRIPT & SUMMARY EXTRACTION
+┌──────────────────────────────────────────┐
+│  Collect Video Transcripts               │
+│  ├─ IF Transcript Available              │
+│  │  └─ Use Transcript                    │
+│  └─ IF Transcript NOT Available          │
+│     └─ Extract & Use Video Metadata      │
+│        (Title, Description, etc.)        │
+└────────────┬─────────────────────────────┘
+             │
+             ▼
+PHASE 5: QUESTION GENERATION (with Token Management)
+┌──────────────────────────────────────────┐
+│  Generate Questions According to Rules   │
+│  Check Token Count                       │
+│  ├─ IF Tokens ≤ Limit                    │
+│  │  └─ Generate Full Summary             │
+│  └─ IF Tokens > Limit                    │
+│     └─ PARTIAL METHOD:                   │
+│        ├─ Divide Summary into Parts      │
+│        ├─ Generate Questions per Part    │
+│        └─ Combine Results                │
+└────────────┬─────────────────────────────┘
+             │
+             ▼
+PHASE 6: DATABASE STORAGE & DELIVERY
+┌──────────────────────────────────────────┐
+│  Save All Results to Database            │
+│  ├─ Definitions                          │
+│  ├─ Video Links & Metadata               │
+│  ├─ Summaries/Transcripts                │
+│  ├─ Generated Questions                  │
+│  └─ Progress Tracking                    │
+└────────────┬─────────────────────────────┘
+             │
+             ▼
+┌──────────────────────────────────────────┐
+│  Complete Roadmap Delivered to User      │
+│  Topic → Definition → Videos → Questions │
+└──────────────────────────────────────────┘
+```
 
 ---
 
-## 🧑‍💻 Author
-Developed by **Debarka Mandal** — blending AI, backend engineering, and DSA automation into one learning platform.
+## 📚 What I Learned
+- Building full-stack applications with Django + vanilla JavaScript
+- Email verification flows and authentication patterns
+- AI-driven content generation and roadmap logic
+- Database design for multi-user platforms with SQLite
+- Deployment and server management fundamentals
+- User experience optimization for learning platforms
 
 ---
 
-### ⭐ Support
-If you like the project, consider **starring ⭐ the repo** to show support and stay updated!
-Also if you want can suggest to add **features**
+## 🎥 Demo Video
+[Add your video link or demo video here]
