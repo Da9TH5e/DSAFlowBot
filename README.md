@@ -3,7 +3,7 @@
 ## 📝 Intro
 **DSAFlowBot** is an intelligent assistant that helps you master Data Structures and Algorithms through auto-generated, topic-wise practice flows. It streamlines your DSA learning journey by providing a structured roadmap and consistent practice sessions with minimal friction.
 
-👉 **Live:** https://dsaflowbot.bar (Migrating the lambda model to openai models)
+👉 **Live:** https://dsaflowbot.bar
 
 ---
 
