@@ -54,7 +54,8 @@ def generate_roadmap(language_name: str) -> Dict[str, List[str]]:
                 {"role": "user", "content": prompt}
             ],
             max_tokens=800,
-            temperature=0.7
+            temperature=0.7,
+	    reasoning_effort="low"
         )
 
         content = response.choices[0].message.content
