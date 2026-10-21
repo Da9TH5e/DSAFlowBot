@@ -58,10 +58,11 @@ def process_transcript(video_id: str):
         for attempt in range(max_retries):
             try:
                 response = client.chat.completions.create(
-                    model="llama-3.1-8b-instant",
+                    model="openai/gpt-oss-20b",
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.2,
-                    max_tokens=800
+                    max_tokens=800,
+		    reasoning_effort="low",
                 )
                 break
             except Exception as e:

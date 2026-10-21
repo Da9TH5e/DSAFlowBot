@@ -53,10 +53,11 @@ def analyze_with_groq(
         """
 
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
             max_tokens=3,
+	    reasoning_effort="low",
         )
 
         result = response.choices[0].message.content.strip().upper()

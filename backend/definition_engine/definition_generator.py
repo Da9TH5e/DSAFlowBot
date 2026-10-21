@@ -38,13 +38,14 @@ def generate_definition(language: str, topic: str) -> str:
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",
             messages=[
                 {"role": "system", "content": "You are a concise programming topic explainer."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=200,
             temperature=0.7,
+            reasoning_effort="low",
         )
 
         content = response.choices[0].message.content.strip()
