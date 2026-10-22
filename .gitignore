@@ -44,3 +44,6 @@ Thumbs.db
 *.bak
 *.tmp
 *.swp
+
+# Generated YouTube audio cache
+backend/youtube_videos/audio_cache/
