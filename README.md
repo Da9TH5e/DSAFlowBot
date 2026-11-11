@@ -1,5 +1,8 @@
 # 🧠 DSAFlowBot
 
+<img width="1024" height="317" alt="DSAFlowBot" src="https://github.com/user-attachments/assets/319e83e4-00d1-4c87-be1c-aebfd5ca1963" />
+
+
 ## 📝 Intro
 **DSAFlowBot** is an intelligent assistant that helps you master Data Structures and Algorithms through auto-generated, topic-wise practice flows. It streamlines your DSA learning journey by providing a structured roadmap and consistent practice sessions with minimal friction.
 
